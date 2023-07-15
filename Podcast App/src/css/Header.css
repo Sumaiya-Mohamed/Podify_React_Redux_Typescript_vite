@@ -1,0 +1,67 @@
+:root {
+    --color-light-blue: #61DAFB;
+    --color-medium-blue: #21222A;
+    --color-heavy-blue: #282D35;
+    --color-medium-purple: #5a189a;
+}
+
+
+.header__container{
+   display: flex;
+   position:relative;
+   justify-content: space-between;
+   background-color: var(--color-heavy-blue);
+   box-shadow:  5px 5px 3px rgba(100, 14, 117, 0.4);
+   top: 0;
+   left: 0;
+   width: 100%;
+}
+
+.left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.podcast__img{
+    width: 35px;
+    object-fit: contain;
+}
+
+.podcast__name {
+    font-size: 25px;
+    color: var(--color-medium-purple);
+    font-weight: bolder;
+}
+
+.right__elements {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search__bar {
+    width: 50px;
+    object-fit: contain;
+    mix-blend-mode: color-burn;
+  }
+  
+  .search__button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    margin-right: 10px;
+  }
+  
+  .search__button:hover {
+    transform: scale(1.1);
+  }
+  
+  .search__button:active {
+    transform: scale(0.9);
+  }
+  
+  .toggle__switch {
+    margin-right: 0;
+  }
