@@ -8,17 +8,15 @@ type Show = {
   title: string;
   description: string;
   image: string;
+  seasons: number,
+  genres: Array<number>;
+  updated: Date;
 };
 
 type CarouselProps = {
   data: Show[];
 };
 
-/* <div className="carousal__information">
-              <h3 className="carousal__title">{show.title}</h3>
-              <p className="carousal__description">{show.description}</p>
-             </div> 
-    this is the other information i took out and left here incase i need it again*/ 
 
     export const Carousal: React.FC<CarouselProps> = ({ data }) => {
   const settings: Settings = {
@@ -30,18 +28,32 @@ type CarouselProps = {
     arrows: true,
 
   };
+  
 
   return (
-    <div className="carousal__container">
+    <div>
+      <h3 className="carousal__heading">You may be interested in...</h3>
+      <div className="carousal__container">
       <Slider {...settings}>
-        {data.map((show, index) => (
-          <div key={show.id} className="carousal__slide">
-             <img className="carousal__img" src={show.image} alt={show.title} />
-          </div>
-        ))}
+        {data.map((show, index) => {
+          const updatedDate = new Date(show.updated);
+          const updatedYear = updatedDate.getFullYear();
+
+          return (
+            
+            <div key={show.id} className="carousal__slide">
+              <img className="carousal__img" src={show.image} alt={show.title} />
+              <div className="overlay"></div>
+              <div className="carousal__information">
+                <h3 className="carousal__title">{show.title}</h3>
+                <h3 className="carousal__seasons">Seasons: {show.seasons}</h3>
+              </div>
+            </div>
+          );
+        })}
       </Slider>
+      </div>
     </div>
   );
 };
-
 export default Carousal;

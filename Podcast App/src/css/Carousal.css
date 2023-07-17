@@ -1,37 +1,56 @@
 @import url('https://fonts.googleapis.com/css?family=Comic+Sans+MS&display=swap');
 
-  .carousal__container{
-    justify-content: center;
-  }
-  .carousal__slide {
-    text-align: center;
-    width: 40%;
-    margin-right: 20px;
-    justify-content: space-between;
-    gap: 5px;
-    display: flex;
-    position: relative;
-  }
-  
-  .carousal__item {
-    display: flex;
-  }
+.carousal__heading{
+  margin-top: 40px;
+  text-align: center;
+  font-size: 22px;
+  font-family:'Times New Roman', Times, serif;
+  font-style: oblique;
+  font-weight: lighter;
+  color: whitesmoke;
+}
+
+.carousal__container{
+  margin-top: 30px;
+  justify-content: center;
+  border-style: outset;
+  border-width: 2px;
+  width: 85%;
+  margin-left: 95px;
+  padding-top: 30px;
+  padding-left: 0;
+  padding-right: 0;
+  border-radius: 15px;
+  border-color: grey;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.76);
+}
+.carousal__slide {
+  text-align: center;
+  width: 40%;
+  margin-right: 20px;
+  justify-content: space-between;
+  display: flex;
+  position: relative;
+
+}
+
+
+
+.carousal__img {
+  width: 75%;
+  height: 320px;
+  object-fit:fill;
+  z-index: 0;
+  margin-left: 50px;
  
-  .carousal__img {
-    width: 90%;
-    height: 450px;
-    object-fit:fill;
-    z-index: 0;
-    filter: blur(1px);
-    margin-left: 20px;
-    
-  }
+}
 
   
   .slick-next {
     position: absolute;
-    top: 55%;
-    left: 95%;
+    top: 42%;
+    left: 100%;
+    margin-left: 19px;
     transform: translateY(-50%);
     background-color: transparent;
     color: white;
@@ -45,8 +64,8 @@
 
   .slick-prev{
     position: absolute;
-    top: 55%;
-    left: 2%;
+    top: 42%;
+    left: -5%;
     transform: translateY(-50%);
     background-color: none;
     color: white;
@@ -62,32 +81,46 @@
     font-size: 55px;
   }
 
-  /*.carousal__information{
+  .carousal__seasons{
+    color: rgb(0, 0, 0);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: rgb(255, 248, 248);
     width: 50%;
-    position: absolute;
-    z-index: 1;
-    background-color: rgba(255, 255, 255, 0.7);
-    top: 65%;
-    left: 3%;
-    padding:20px;
-    border-radius: 35px;
-    
-  }*/
+    margin-left: 88px;
+    border-radius: 15px ;
+    font-size: 15px;
+    opacity: 0.6;
+  }
 
- /* .carousal__description{
+ /*.carousal__description{
    overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4; 
+  -webkit-line-clamp: 2; 
   line-height: 1.2em;
   max-height: 2.4em; 
   text-overflow: ellipsis;
   padding-right: 15px;
-  padding-left: 15px;
-  }
-*/
-  .carousal__title{
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 10px;
+  font-weight: bolder;
+  color: rgb(160, 160, 160);
   }
 
+  
+
+ /*.overlay {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(27, 27, 27, 0.5); 
+  }*/
+  
+  .carousal__title{
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 19px;
+    padding-left:7px;
+    padding-right: 7px;
+    color: whitesmoke;
+    line-height: 1em;
+    font-weight: lighter;
+  }

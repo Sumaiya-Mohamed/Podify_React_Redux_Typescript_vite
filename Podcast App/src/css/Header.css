@@ -8,13 +8,14 @@
 
 .header__container{
    display: flex;
-   position:relative;
    justify-content: space-between;
-   background-color: var(--color-heavy-blue);
-   box-shadow:  5px 5px 3px rgba(100, 14, 117, 0.4);
+   background-color: #232323;
+   box-shadow: 2px 2px 8px rgba(212, 0, 255, 0.76);
    top: 0;
    left: 0;
    width: 100%;
+   margin: 0;
+   padding: 0;
 }
 
 .left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
