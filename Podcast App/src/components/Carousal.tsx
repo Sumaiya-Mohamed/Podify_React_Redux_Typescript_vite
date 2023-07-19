@@ -3,18 +3,34 @@ import Slider, { Settings } from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+type ShowPreview = Array<Show>
+
 type Show = {
   id: string;
   title: string;
   description: string;
   image: string;
-  seasons: number,
+  seasons: number | Array<Seasons>;
   genres: Array<number>;
   updated: Date;
 };
 
+type Seasons = [
+  season: number,
+  title: string,
+  image: string,
+  episodes: Array<Episodes>,
+]
+
+type Episodes = [
+  title: string,
+  description: string,
+  episode: number,
+  file: string,
+];
+
 type CarouselProps = {
-  data: Show[];
+  data: ShowPreview;
 };
 
 

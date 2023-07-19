@@ -11,7 +11,7 @@
   display: flex;
   align-items: center; /* Align items vertically */
   margin-left: 500px;
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   color: white;
 }
 
@@ -26,7 +26,7 @@
   border-width: 2px;
   border-radius: 8px;
   border-color: rgba(255, 255, 255, );
- 
+  text-align: center;
 }
 
 .heading__check{
@@ -40,3 +40,4 @@
   font-weight: lighter;
   color: whitesmoke;
 }
+

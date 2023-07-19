@@ -3,114 +3,80 @@ import { Header } from './components/Header'
 import { Carousal } from './components/Carousal'
 import { FilterBar } from './components/Filter-bar';
 import { PodcastPreview } from './components/Podcast-Preview';
-import { ShowPreview } from './components/Show-Preview';
 //import  { ShowPreview } from './components/Show-Preview'
  
 
-type ShowPreview = {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  seasons: number;
-  genres: number[];
-  updated: Date;
-};
+type ShowPreview = Array<Show>
 
 type Show = {
   id: string;
   title: string;
   description: string;
-  seasons: object[];
-  episodes: object[];
-};
-
-type Season = {
-  title: string;
   image: string;
-  episodes: object[];
+  seasons: number | Array<Seasons>;
+  genres: Array<number>;
+  updated: Date;
 };
 
-type Episode = {
-  title: string;
-  description: string;
-  episode: number;
-  file: string;
-};
+type Seasons = [
+  season: number,
+  title: string,
+  image: string,
+  episodes: Array<Episodes>,
+]
 
-type Dialog = boolean;
+type Episodes = [
+  title: string,
+  description: string,
+  episode: number,
+  file: string,
+];
+
+
 
 export const App: React.FC = () => {
-  const [podcastData, setPodcastData] = useState<ShowPreview[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState<Dialog>(false);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [seasons, setSeasons] = useState<Season[]>([]);
-
+  const [podcastData, setPodcastData] = useState<ShowPreview | []>([]);
+ 
   useEffect(() => {
+    
     const fetchData = async () => {
       try {
         const response: Response = await fetch('https://podcast-api.netlify.app/shows');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const json: ShowPreview[] = await response.json();
-        setPodcastData(json);
-      } catch (error) {
+        const json = await response.json() as ShowPreview;
+        setPodcastData(json)
+      }
+      catch (error) {
         console.log('Error fetching data:', error);
       }
     };
-
+    
     void fetchData();
+
+    // I did not include a clean up function because this data will be used through out my app.
   }, []);
 
-  useEffect(() => {
-    const fetchShowDetails = async (showId: string) => {
-      try {
-        const response: Response = await fetch(`https://podcast-api.netlify.app/shows/${showId}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch show details');
-        }
-         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const showDetails: Show = await response.json();
-        setSeasons(showDetails.seasons as Season[]);
-        setEpisodes(showDetails.episodes as Episode[]);
-      } catch (error) {
-        console.log('Error fetching show details:', error);
-      }
-    };
-
-    if (isDialogOpen) {
-      podcastData.forEach((show) => {
-        void fetchShowDetails(show.id);
-      });
-    }
-  }, [isDialogOpen, podcastData]);
-
- /* const displayShowPreview = (dialog: boolean,season: object,episode: object) =>{
-     setIsDialogOpen(true);
-     return(
-       
-       <div>
-          <div>episode</div>
-       </div>
-     )
-  }*/
-
+    const showId = podcastData.flatMap((show) =>{
+        return(
+          show.id
+        )
+    })
+  
+    console.log(showId)
   return (
     <div>
       <Header />
       <br></br>
       <Carousal 
-       data= {podcastData}
+       data = {podcastData} 
       />
       <br></br>
       <FilterBar />
       <PodcastPreview
        data= {podcastData}
-       dialog = {isDialogOpen}
-       season={seasons}
-       episode={episodes}
+      showIds={showId}
       />
     </div>
   );

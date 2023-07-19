@@ -11,9 +11,10 @@ export function FilterBar(){
          <p>Sort By:</p>
         </div>
         <select className="filter__select">
-          <option>Option 1</option>
-          <option>Option 2</option>
-          <option>Option 3</option>
+          <option>A-Z</option>
+          <option>Z-A</option>
+          <option>MOST RECENT</option>
+          <option>LEAST RECENT</option>
         </select>
         </div>
         </div>

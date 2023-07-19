@@ -42,7 +42,7 @@
   }
   
   .search__bar {
-    width: 50px;
+    width: 40px;
     object-fit: contain;
     mix-blend-mode: color-burn;
   }
