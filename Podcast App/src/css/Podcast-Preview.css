@@ -1,7 +1,7 @@
  .preview__container{
     display: grid;
-    width: 95%;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    width: 98%;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 20px;
     grid-row-gap: 35px; 
     padding-left: 40px;
@@ -13,9 +13,11 @@
  }
  
  .preview__information{
-    width: 85%;
+    width: 75%;
     font-size: 13px;
     line-height: 0.9em;
+    padding-left: 10px;
+    padding-right: 10px;
     background-color: rgba(0, 0, 0, 0.3);
     height: 100%;
     color: rgb(150, 150, 150);
@@ -32,6 +34,18 @@
  
  .preview__information:active{
    transform: scale(0.9);
+ }
+
+ .preview__genre{
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: 5px;
+  line-break: auto;
+ }
+
+ .genre__title{
+  font-size: 15px;
+  font-weight: bold;
  }
 
  .preview__img{
@@ -66,31 +80,36 @@
 
  /*Dialog styling*/
  .dialog {
+   padding-left: 15px;
+   padding-right: 15px;
    display:block;
-   position: fixed;
-   background-color:  rgba(58, 56, 56, 0.87);  
+   visibility: visible;
+   position: relative;
+   background-color:  rgba(51, 51, 51, 0.959);  
+   opacity: none;
    border-radius: 20px;
    top: 50%;
-   left: 50%;
+   left: 33%;
    transform: translate(-50%, -50%);
    z-index: 2;
-   width: 60%;
-   height: 550px;
+   width: 65%;
+   height: 570px;
    overflow-y: auto;
    color: black;
  }
 
  
  .selectedshow__mp3{
+   z-index: 1;
    width:100%;
-   height: 200px;
-   border-bottom-style: solid;
+   height: 450px;
+   position: relative;
  }
 
 .selectedshow__content{
+   
    color:#000000;
    font-family: 'lato', sans-serif ;
-   border-bottom-style: solid;
  }
  
 
@@ -100,6 +119,8 @@
  }
 
  .dialog__container {
+   display: inline;
+   visibility: visible;
    position: fixed;
    top: 0;
    left: 0;
@@ -151,8 +172,119 @@
    width: 10%;
    height: 25px;
    border-style: none;
+   margin-top: 10px;
+   margin-bottom: 10px;
    background-color: #000000c0;
    border-radius: 13px;
    color:#acacace3;
    cursor: pointer;
  }
+ 
+ .select__container{
+  position: relative;
+ }
+
+ .seasons__select{
+  position: absolute;
+  margin-top: 34px;
+  left: 82%;
+  background-color:  rgba(255, 248, 248, 0.767);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  border-style: solid;
+  border-width: 2px;
+  border-radius: 8px;
+  border-color: rgba(255, 255, 255, );
+  text-align: center;
+ }
+
+
+ .seasons__information{
+  font-family: 'lato', sans-serif ;
+  color:#000000;
+
+ }
+
+ .seasons__episodes{
+  list-style: none;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+ }
+
+ .episodes{
+  border-top-style: solid ;
+  border-width: 1.8px;
+  text-align: left;
+  width: 100%;
+  display:flex;
+  position: relative;
+ }
+
+ .seasons__title{
+  margin-top: 50px;
+  height: 110px;
+  font-size: 19px;
+ }
+
+ .episode__number{
+  font-weight: bold;
+  font-size: 18px;
+  width: 15%;
+  margin-left: 0;
+  margin-right: 0;
+ }
+
+ .episode__details{
+  width: 70%;
+  height:fit-content;
+  text-overflow: ellipsis;
+ }
+
+ .episode__description{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  
+ }
+
+ .play__button > img{
+  position:absolute;
+  width: 50px;
+  top: 25%;
+  left: 90%;
+  object-fit: contain;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+ }
+ 
+.play__button:active {
+  transform: scale(0.1);
+}
+
+.blurred__background{
+  padding-left: 0;
+  padding-right: 0;
+  z-index: 0;
+  width: 100%;
+  height: 450px;
+  filter: blur(10px);
+  position: absolute;
+}
+
+.selectedshow__image{
+  position: absolute;
+  z-index: 1;
+  width: 70%;
+  height: 350px;
+  top: 7%;
+  left: 15%;
+}
+
+.audio__player{
+  z-index: 1;
+  position: absolute;
+  width: 80%;
+  height: 75px;
+  top: 82%;
+  left: 10%;
+}

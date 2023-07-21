@@ -6,14 +6,14 @@ import { PodcastPreview } from './components/Podcast-Preview';
 //import  { ShowPreview } from './components/Show-Preview'
  
 
-type ShowPreview = Array<Show>
+type ShowOriginalData = Array<Show>
 
 type Show = {
   id: string;
   title: string;
   description: string;
   image: string;
-  seasons: number | Array<Seasons>;
+  seasons: number;
   genres: Array<number>;
   updated: Date;
 };
@@ -35,7 +35,7 @@ type Episodes = [
 
 
 export const App: React.FC = () => {
-  const [podcastData, setPodcastData] = useState<ShowPreview | []>([]);
+  const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
  
   useEffect(() => {
     
@@ -45,7 +45,7 @@ export const App: React.FC = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
-        const json = await response.json() as ShowPreview;
+        const json = await response.json() as ShowOriginalData;
         setPodcastData(json)
       }
       catch (error) {
@@ -64,7 +64,6 @@ export const App: React.FC = () => {
         )
     })
   
-    console.log(showId)
   return (
     <div>
       <Header />
