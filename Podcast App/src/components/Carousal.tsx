@@ -34,8 +34,9 @@ type CarouselProps = {
 };
 
 
-    export const Carousal: React.FC<CarouselProps> = ({ data }) => {
-  const settings: Settings = {
+  export const Carousal: React.FC<CarouselProps> = ({ data }) => {
+    
+    const settings: Settings = {
     dots: false,
     infinite: true,
     speed: 500,
@@ -69,7 +70,7 @@ type CarouselProps = {
         })}
       </Slider>
       </div>
-    </div>
+  </div>
   );
 };
-export default Carousal;
+

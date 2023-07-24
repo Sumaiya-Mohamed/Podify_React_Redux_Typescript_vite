@@ -1,5 +1,5 @@
 import React from "react"
-import { Switch }  from "@mui/material"
+//import { Switch }  from "@mui/material"
 
 
 export function Header(){
@@ -10,10 +10,9 @@ export function Header(){
               <h1 className="podcast__name">Podify</h1>
             </div>
             <div className="right__elements">
-              <button className="search__button">
-               <img className="search__bar" src="./src/assets/searching-bar.png" alt="search bar icon"></img>
+              <button className="favorites__button">
+               Favorites
               </button>
-              <Switch className="toggle__switch" />
             </div>
         </div>
 

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Header } from './components/Header'
 import { Carousal } from './components/Carousal'
-import { FilterBar } from './components/Filter-bar';
-import { PodcastPreview } from './components/Podcast-Preview';
-//import  { ShowPreview } from './components/Show-Preview'
+import { PodcastPreview } from './components/Podcast-Preview'
+import { Footer } from './components/Footer'
+import { Button, CircularProgress } from '@mui/material';
  
 
 type ShowOriginalData = Array<Show>
@@ -36,20 +36,26 @@ type Episodes = [
 
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Added a state variable to track loading status
  
   useEffect(() => {
     
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const response: Response = await fetch('https://podcast-api.netlify.app/shows');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
         const json = await response.json() as ShowOriginalData;
         setPodcastData(json)
+
+         // Set isLoading to false after data fetching is complete
+         setIsLoading(false);
       }
       catch (error) {
         console.log('Error fetching data:', error);
+         setIsLoading(false);
       }
     };
     
@@ -66,21 +72,29 @@ export const App: React.FC = () => {
   
   return (
     <div>
-      <Header />
-      <br></br>
-      <Carousal 
-       data = {podcastData} 
-      />
-      <br></br>
-      <FilterBar />
-      <PodcastPreview
-       data= {podcastData}
-      showIds={showId}
-      />
-    </div>
-  );
+       {/* Conditional rendering based on isLoading */}
+      {isLoading ? (
+        <div className="loading__container">
+        <CircularProgress size={40} color="inherit" className="loading__open"/> 
+       </div> 
+        ) : ( 
+       <div>
+        <Header />
+        <br></br>
+        <Carousal 
+         data = {podcastData} 
+        />
+        <br></br>
+        <PodcastPreview
+         data= {podcastData}
+         showIds={showId}
+        />
+        <Footer/>
+       </div>
+       )
+     }
+   </div>
+  )
 }
-
-
 
 
