@@ -1,70 +1,223 @@
-.filter__bar {
-  display: flex;
-  width: 80%;
-  align-items: center;
-  height: fit-content;
-  margin-top: 30px;
-  margin-right: 0;
+
+@media (min-width: 300px) {
+  .filter__bar {
+    display: flex;
+    width: 80%;
+    align-items: center;
+    height: fit-content;
+    margin-top: 30px;
+    margin-right: 0;
+  }
+  
+  .filter__heading {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+    font-size: 13px;
+    padding-right: 5px;
+  }
+  
+  .filter__select {
+    width: 49%;
+    height: 20px;
+    background-color: rgba(255, 248, 248, 0.767);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    text-align: center;
+    margin-left: 10px;
+  }
+  
+  .heading__check {
+    font-size: 25px;
+    padding-left: 5px;
+    margin-top: 75px;
+    text-align: center;
+    font-size: 22px;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: lighter;
+    color: whitesmoke;
+  }
+  
+  .search__container {
+    display: flex;
+    align-items: center;
+    margin-left: 70px;
+  }
+  
+  .search__label{
+    margin-right: 5px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+  }
+  
+  .search__input{
+    width: 60%;
+    background-color: rgba(255, 248, 248, 0.767);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    height: 20px;
+  }
+  
+  .sort__container {
+    display: flex;
+    align-items: center;
+   margin-left: 30px;
+  }
+  
+  .search__button{
+    margin-left: 5px;
+  }
 }
 
-.filter__heading {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  color: white;
+@media (min-width: 700px) {
+  .filter__bar {
+    display: flex;
+    width: 80%;
+    align-items: center;
+    height: fit-content;
+    margin-top: 30px;
+    margin-right: 0;
+  }
+  
+  .filter__heading {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+  }
+  
+  .filter__select {
+    width: 49%;
+    height: 26px;
+    background-color: rgba(255, 248, 248, 0.767);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    text-align: center;
+    margin-left: 5px;
+  }
+  
+  .heading__check {
+    font-size: 25px;
+    padding-left: 23px;
+    margin-top: 75px;
+    text-align: center;
+    font-size: 22px;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: lighter;
+    color: whitesmoke;
+  }
+  
+  .search__container {
+    display: flex;
+    align-items: center;
+    margin-left: 250px;
+  }
+  
+  .search__label{
+    margin-right: 5px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+  }
+  
+  .search__input{
+    width: 65%;
+    background-color: rgba(255, 248, 248, 0.767);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    height: 26px;
+  }
+  
+  .sort__container {
+    display: flex;
+    align-items: center;
+   margin-left: 20px;
+  }
+  
+  .search__button{
+    margin-left: 5px;
+  }
+  
 }
 
-.filter__select {
-  width: 49%;
-  height: 26px;
-  background-color: rgba(255, 248, 248, 0.767);
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 8px;
-  border-color: rgba(255, 255, 255);
-  text-align: center;
-  margin-left: 5px;
-}
-
-.heading__check {
-  font-size: 25px;
-  padding-left: 23px;
-  margin-top: 75px;
-  text-align: center;
-  font-size: 22px;
-  font-family: 'Times New Roman', Times, serif;
-  font-style: oblique;
-  font-weight: lighter;
-  color: whitesmoke;
-}
-
-.search__container {
-  display: flex;
-  align-items: center;
-  margin-left: 450px;
-}
-
-.search__label{
-  margin-right: 5px;
-  font-family: 'Comic Sans MS', cursive, sans-serif;
-  color: white;
-}
-
-.search__input{
-  width: 65%;
-  background-color: rgba(255, 248, 248, 0.767);
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 8px;
-  border-color: rgba(255, 255, 255);
-  height: 26px;
-}
-
-.sort__container {
-  display: flex;
-  align-items: center;
- margin-left: 20px;
-}
-
-.search__button{
-  margin-left: 5px;
+@media (min-width: 1000px) {
+  .filter__bar {
+    display: flex;
+    width: 80%;
+    align-items: center;
+    height: fit-content;
+    margin-top: 30px;
+    margin-right: 0;
+  }
+  
+  .filter__heading {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+  }
+  
+  .filter__select {
+    width: 49%;
+    height: 26px;
+    background-color: rgba(255, 248, 248, 0.767);
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    text-align: center;
+    margin-left: 5px;
+  }
+  
+  .heading__check {
+    font-size: 25px;
+    padding-left: 23px;
+    margin-top: 75px;
+    text-align: center;
+    font-size: 22px;
+    font-family: 'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: lighter;
+    color: whitesmoke;
+  }
+  
+  .search__container {
+    display: flex;
+    align-items: center;
+    margin-left: 480px;
+  }
+  
+  .search__label{
+    margin-right: 5px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    color: white;
+  }
+  
+  .search__input{
+    width: 65%;
+    background-color: rgba(255, 248, 248, 0.767);
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 8px;
+    border-color: rgba(255, 255, 255);
+    height: 26px;
+  }
+  
+  .sort__container {
+    display: flex;
+    align-items: center;
+   margin-left: 20px;
+  }
+  
+  .search__button{
+    margin-left: 5px;
+  }
+  
 }

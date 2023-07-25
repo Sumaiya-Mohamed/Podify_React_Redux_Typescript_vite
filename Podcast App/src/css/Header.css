@@ -5,66 +5,201 @@
     --color-medium-purple: #5a189a;
 }
 
-
-.header__container{
-   display: flex;
-   justify-content: space-between;
-   background-color: #232323;
-   box-shadow: 2px 2px 8px rgba(212, 0, 255, 0.76);
-   top: 0;
-   left: 0;
-   width: 100%;
-   margin: 0;
-   padding: 0;
-}
-
-.left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
-    margin-left: 20px;
+@media (min-width: 300px) {
+  .header__container{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    background-color: #232323;
+    box-shadow: 2px 2px 8px rgba(212, 0, 255, 0.76);
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+ }
+ 
+ .left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
+     margin-left: 20px;
+     display: flex;
+     justify-content: space-evenly;
+ }
+ 
+ .podcast__img{
+     width: 35px;
+     object-fit: contain;
+ }
+ 
+ .podcast__name {
+     font-size: 25px;
+     color: rgba(212, 0, 255, 0.76);
+     font-weight: bolder;
+ }
+ 
+ .right__elements {
+     margin-right: 20px;
+     display: flex;
+     align-items: center;
+   }
+   
+   .search__bar {
+     width: 40px;
+     object-fit: contain;
+     mix-blend-mode: color-burn;
+   }
+   
+   .favorites__button {
+     background-color:#232323;
+     border: solid;
+     border-color:rgba(212, 0, 255, 0.76);
+     border-width: 1px;
+     font-weight: lighter;
+     cursor: pointer;
+     transition: transform 0.3s ease;
+     margin-right: 10px;
+     color:rgba(212, 0, 255, 0.76);
+     font-size: 18px;
+     border-radius: 8px;
+   }
+   
+   .favorites__button:hover {
+     transform: scale(1.1);
+   }
+   
+   .favorites__button:active {
+     transform: scale(0.9);
+   }
+ 
 }
 
-.podcast__img{
-    width: 35px;
-    object-fit: contain;
-}
-
-.podcast__name {
-    font-size: 25px;
-    color: rgba(212, 0, 255, 0.76);
-    font-weight: bolder;
-}
-
-.right__elements {
-    margin-right: 20px;
+@media (min-width: 700px) {
+  .header__container{
     display: flex;
-    align-items: center;
-  }
-  
-  .search__bar {
-    width: 40px;
-    object-fit: contain;
-    mix-blend-mode: color-burn;
-  }
-  
-  .favorites__button {
-    background-color:#232323;
-    border: solid;
-    border-color:rgba(212, 0, 255, 0.76);
-    border-width: 1px;
-    font-weight: lighter;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    margin-right: 10px;
-    color:rgba(212, 0, 255, 0.76);
-    font-size: 18px;
-    border-radius: 8px;
-  }
-  
-  .favorites__button:hover {
-    transform: scale(1.1);
-  }
-  
-  .favorites__button:active {
-    transform: scale(0.9);
-  }
+    justify-content: space-between;
+    background-color: #232323;
+    box-shadow: 2px 2px 8px rgba(212, 0, 255, 0.76);
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+ }
+ 
+ .left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
+     margin-left: 65px;
+     display: flex;
+     justify-content: space-evenly;
+ }
+ 
+ .podcast__img{
+     width: 35px;
+     object-fit: contain;
+ }
+ 
+ .podcast__name {
+     font-size: 25px;
+     color: rgba(212, 0, 255, 0.76);
+     font-weight: bolder;
+ }
+ 
+ .right__elements {
+     margin-right: 50px;
+     display: flex;
+     align-items: center;
+   }
+   
+   .search__bar {
+     width: 40px;
+     object-fit: contain;
+     mix-blend-mode: color-burn;
+   }
+   
+   .favorites__button {
+     background-color:#232323;
+     border: solid;
+     border-color:rgba(212, 0, 255, 0.76);
+     border-width: 1px;
+     font-weight: lighter;
+     cursor: pointer;
+     transition: transform 0.3s ease;
+     margin-right: 10px;
+     color:rgba(212, 0, 255, 0.76);
+     font-size: 18px;
+     border-radius: 8px;
+   }
+   
+   .favorites__button:hover {
+     transform: scale(1.1);
+   }
+   
+   .favorites__button:active {
+     transform: scale(0.9);
+   }
+}
+
+
+
+@media (min-width: 1000px) {
+  .header__container{
+    display: flex;
+    justify-content: space-between;
+    background-color: #232323;
+    box-shadow: 2px 2px 8px rgba(212, 0, 255, 0.76);
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+ }
+ 
+ .left__elements{ /* This is all the elements on the left hand side of header: the mic and heading.*/
+     margin-left: 20px;
+     display: flex;
+     justify-content: space-evenly;
+ }
+ 
+ .podcast__img{
+     width: 35px;
+     object-fit: contain;
+ }
+ 
+ .podcast__name {
+     font-size: 25px;
+     color: rgba(212, 0, 255, 0.76);
+     font-weight: bolder;
+ }
+ 
+ .right__elements {
+     margin-right: 20px;
+     display: flex;
+     align-items: center;
+   }
+   
+   .search__bar {
+     width: 40px;
+     object-fit: contain;
+     mix-blend-mode: color-burn;
+   }
+   
+   .favorites__button {
+     background-color:#232323;
+     border: solid;
+     border-color:rgba(212, 0, 255, 0.76);
+     border-width: 1px;
+     font-weight: lighter;
+     cursor: pointer;
+     transition: transform 0.3s ease;
+     margin-right: 10px;
+     color:rgba(212, 0, 255, 0.76);
+     font-size: 18px;
+     border-radius: 8px;
+   }
+   
+   .favorites__button:hover {
+     transform: scale(1.1);
+   }
+   
+   .favorites__button:active {
+     transform: scale(0.9);
+   }
+}
+

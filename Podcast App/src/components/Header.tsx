@@ -1,8 +1,10 @@
 import React from "react"
+import { Link } from 'react-router-dom';
 //import { Switch }  from "@mui/material"
 
 
-export function Header(){
+export const Header = () => {
+  
     return(
         <div className="header__container">
             <div className="left__elements">
@@ -10,9 +12,13 @@ export function Header(){
               <h1 className="podcast__name">Podify</h1>
             </div>
             <div className="right__elements">
-              <button className="favorites__button">
-               Favorites
-              </button>
+            <Link to="./components/FavoritesPage">
+             <button 
+             className="favorites__button"
+             >
+              Favorites
+             </button>
+            </Link>
             </div>
         </div>
 

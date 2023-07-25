@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["react", "react-dom", "@mui/material", "react-slick"],
+    "types": ["react", "react-dom", "react-slick", "react-router-dom"],
     "composite": true,
     "skipLibCheck": true,
     "module": "ESNext",

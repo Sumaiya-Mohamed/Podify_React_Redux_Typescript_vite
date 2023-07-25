@@ -15,6 +15,7 @@ module.exports = {
     sourceType: 'module',
     project: true,
     tsconfigRootDir: __dirname,
+    project: './tsconfig.json',
   },
   plugins: ['react-refresh'],
   rules: {
@@ -24,4 +25,5 @@ module.exports = {
     ],
     '@typescript-eslint/no-non-null-assertion': 'off',
   },
+  ignorePatterns: ['vite.config.ts'],
 }

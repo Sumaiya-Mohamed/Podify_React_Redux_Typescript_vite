@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header'
 import { Carousal } from './components/Carousal'
 import { PodcastPreview } from './components/Podcast-Preview'
 import { Footer } from './components/Footer'
 import { Button, CircularProgress } from '@mui/material';
+
+import { FavoritesPage } from './components/FavoritesPage'; // Import the FavoritesPage component
+
  
 
 type ShowOriginalData = Array<Show>
@@ -37,7 +40,9 @@ type Episodes = [
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Added a state variable to track loading status
- 
+  const [favorites, setFavorites] = useState<ShowOriginalData>([]);
+
+
   useEffect(() => {
     
     const fetchData = async () => {
@@ -88,12 +93,14 @@ export const App: React.FC = () => {
         <PodcastPreview
          data= {podcastData}
          showIds={showId}
+         favorites={favorites}
         />
         <Footer/>
+        
        </div>
        )
      }
-   </div>
+    </div>
   )
 }
 

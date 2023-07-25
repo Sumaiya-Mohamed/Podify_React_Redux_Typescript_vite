@@ -4,6 +4,8 @@ import { FilterBar } from './Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import { Button, CircularProgress } from '@mui/material';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
@@ -41,6 +43,7 @@ type ActiveShowData = {
 type PodcastPreviewProps = {
   data: ShowOriginalData
   showIds: Array<string>
+  favorites: ShowOriginalData
 };
 
 type Seasons = Array<Season>
@@ -60,7 +63,7 @@ type Episodes = {
 };
 
 
-export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) => {
+export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds, favorites}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
   const [dialogOpen, setDialogOpen] = useState<boolean> (false);   // A boolean value to toggle the dialog between open and close.
@@ -71,6 +74,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const [isPlaying, setIsPlaying] = useState<boolean>(false); // This will be used to pause and play the audio.
   const [filteredShows, setFilteredShows] = useState<AllShowData>([]);
   const [sortOption, setSortOption] = useState<string>('');
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
 
@@ -157,6 +161,7 @@ const handleSearch = (query: string) => {
 const handleSort = (sortOption: string) => {
   setSortOption(sortOption);
 
+
   if (sortOption !== '') {
     const sortedShows = filteredShows.slice(); // Create a copy of the filtered shows to avoid directly modifying the state
     sortedShows.sort((a, b) => {
@@ -175,7 +180,14 @@ const handleSort = (sortOption: string) => {
   }
 };
 
-
+//Function to handle adding/removing the show from favorites
+const handleAddToFavorites = () => {
+  setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+ // localStorage.setItem('favorites')
+ if(isFavorite){
+  favorites.push(isFavorite)
+ }
+};
 
 
   return (
@@ -195,7 +207,7 @@ const handleSort = (sortOption: string) => {
        <div className="preview__container">
        {filteredShows.map((show) => (
         <div key={show.id}>
-           <button className={`preview__information ${filteredShows.length === 1 ? 'preview__information-large' : ''}`}
+          <button className={`preview__information ${filteredShows.length === 1 ? 'preview__information-large' : ''}`}
             onClick={() => openDialog(show)}>
             <div>
            <img className={`preview__img ${filteredShows.length === 1 ? 'preview__img-large' : ''}`}
@@ -212,6 +224,7 @@ const handleSort = (sortOption: string) => {
              </div>
              <p>Updated:  {new Date(show.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
            </div>
+          
          </button>
         
         </div>
@@ -227,6 +240,9 @@ const handleSort = (sortOption: string) => {
             <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
+            <button className="favorite__button" onClick={handleAddToFavorites}>
+              {isFavorite ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+            </button>
             {currentEpisodeUrl &&  (
                  <div>
                  <AudioPlayer
@@ -306,6 +322,7 @@ const handleSort = (sortOption: string) => {
                      
                     ))}
                   </ul>
+              
                 </div>
               )}
             

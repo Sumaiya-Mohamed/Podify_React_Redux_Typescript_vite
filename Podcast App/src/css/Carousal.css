@@ -1,16 +1,195 @@
 @import url('https://fonts.googleapis.com/css?family=Comic+Sans+MS&display=swap');
 
-.carousal__heading{
-  margin-top: 40px;
-  text-align: center;
-  font-size: 22px;
-  font-family:'Times New Roman', Times, serif;
-  font-style: oblique;
-  font-weight: lighter;
-  color: whitesmoke;
+@media ( min-width: 300px) {
+  .carousal__container{
+    margin-top: 30px;
+    justify-content: center;
+    border-style: outset;
+    border-width: 2px;
+    width: 85%;
+    margin-right: 0;
+    margin-left: 25px;
+    padding-top: 30px;
+    border-radius: 15px;
+    border-color: grey;
+    box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.76);
+  }
+
+  .slick-next {
+    position: absolute;
+    top: 42%;
+    left: 100%;
+    margin-left: 1px;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    font-size: 0px;
+    padding: 2px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .slick-prev{
+    position: absolute;
+    top: 42%;
+    transform: translateY(-50%);
+    background-color: none;
+    color: white;
+    font-size: 0px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .carousal__img {
+    width: 65%;
+    height: 120px;
+    object-fit:fill;
+    z-index: 0;
+    margin-left: 15px;
+   
+  }
+  .carousal__title{
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 10px;
+    padding-left:7px;
+    padding-right: 7px;
+    color: whitesmoke;
+    line-height: 1em;
+    font-weight: lighter;
+  }
+
+  .carousal__seasons{
+    color: rgb(0, 0, 0);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: rgb(255, 248, 248);
+    width: 40%;
+    border-radius: 5px ;
+    font-size: 7px;
+    opacity: 0.6;
+    margin-left: 30px;
+  }
+
+  .carousal__slide {
+    text-align: center;
+    width: 20%;
+    justify-content: space-between;
+    display: flex;
+    position: relative;
+  
+  }
+  
+  .carousal__heading{
+    margin-top: 40px;
+    text-align: center;
+    font-size: 22px;
+    font-family:'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: lighter;
+    color: whitesmoke;
+  }
 }
 
-.carousal__container{
+@media ( min-width: 650px) {
+  .carousal__container{
+    margin-top: 30px;
+    justify-content: center;
+    border-style: outset;
+    border-width: 2px;
+    width: 55%;
+    margin-left: 185px;
+    margin-right: 130px;
+    padding-top: 30px;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 15px;
+    border-color: grey;
+    box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.76);
+  }
+
+  .slick-next {
+    position: absolute;
+    top: 42%;
+    left: 100%;
+    margin-left: 1px;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    font-size: 0px;
+    padding: 2px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .slick-prev{
+    position: absolute;
+    top: 42%;
+    transform: translateY(-50%);
+    background-color: none;
+    color: white;
+    font-size: 0px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .carousal__img {
+    width: 75%;
+    height: 180px;
+    object-fit:fill;
+    z-index: 0;
+    margin-left: 15px;
+   
+  }
+  .carousal__title{
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 10px;
+    padding-left:7px;
+    padding-right: 7px;
+    color: whitesmoke;
+    line-height: 1em;
+    font-weight: lighter;
+  }
+
+  .carousal__seasons{
+    color: rgb(0, 0, 0);
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-color: rgb(255, 248, 248);
+    width: 40%;
+    border-radius: 5px ;
+    font-size: 7px;
+    opacity: 0.6;
+    margin-left: 38px;
+  }
+
+  .carousal__slide {
+    text-align: center;
+    width: 20%;
+    justify-content: space-between;
+    display: flex;
+    position: relative;
+  
+  }
+  
+  .carousal__heading{
+    margin-top: 40px;
+    text-align: center;
+    margin-right: 95px;
+    font-size: 22px;
+    font-family:'Times New Roman', Times, serif;
+    font-style: oblique;
+    font-weight: lighter;
+    color: whitesmoke;
+  }
+}
+
+
+@media(min-width: 1000px) {
+  .carousal__container{
   margin-top: 30px;
   justify-content: center;
   border-style: outset;
@@ -27,15 +206,43 @@
 .carousal__slide {
   text-align: center;
   width: 40%;
-  margin-right: 20px;
+  margin-right: 45px;
   justify-content: space-between;
   display: flex;
   position: relative;
 
 }
 
+.slick-next {
+  position: absolute;
+  top: 42%;
+  left: 100%;
+  margin-left: 19px;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: white;
+  font-size: 0px;
+  padding: 8px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 1;
+}
 
-
+.slick-prev{
+  position: absolute;
+  top: 42%;
+  left: -5%;
+  transform: translateY(-50%);
+  background-color: none;
+  color: white;
+  font-size: 0px;
+  padding: 8px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 1;
+}
 .carousal__img {
   width: 75%;
   height: 320px;
@@ -45,52 +252,50 @@
  
 }
 
-  
-  .slick-next {
-    position: absolute;
-    top: 42%;
-    left: 100%;
-    margin-left: 19px;
-    transform: translateY(-50%);
-    background-color: transparent;
-    color: white;
-    font-size: 0px;
-    padding: 8px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    z-index: 1;
-  }
+.carousal__title{
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-size: 19px;
+  padding-left:7px;
+  padding-right: 7px;
+  color: whitesmoke;
+  line-height: 1em;
+  font-weight: lighter;
+}
 
-  .slick-prev{
-    position: absolute;
-    top: 42%;
-    left: -5%;
-    transform: translateY(-50%);
-    background-color: none;
-    color: white;
-    font-size: 0px;
-    padding: 8px;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    z-index: 1;
-  }
+.carousal__seasons{
+  color: rgb(0, 0, 0);
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background-color: rgb(255, 248, 248);
+  width: 50%;
+  margin-left: 88px;
+  border-radius: 15px ;
+  font-size: 15px;
+  opacity: 0.6;
+}
+
+.carousal__heading{
+  margin-top: 40px;
+  text-align: center;
+  font-size: 22px;
+  margin-right: 5px;
+  font-family:'Times New Roman', Times, serif;
+  font-style: oblique;
+  font-weight: lighter;
+  color: whitesmoke;
+}
+}
+
+
+
+
+  
+  
   
   .slick-prev::marker{
     font-size: 55px;
   }
 
-  .carousal__seasons{
-    color: rgb(0, 0, 0);
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-color: rgb(255, 248, 248);
-    width: 50%;
-    margin-left: 88px;
-    border-radius: 15px ;
-    font-size: 15px;
-    opacity: 0.6;
-  }
+  
 
  /*.carousal__description{
    overflow: hidden;
@@ -115,12 +320,4 @@
     background-color: rgba(27, 27, 27, 0.5); 
   }*/
   
-  .carousal__title{
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 19px;
-    padding-left:7px;
-    padding-right: 7px;
-    color: whitesmoke;
-    line-height: 1em;
-    font-weight: lighter;
-  }
+  
