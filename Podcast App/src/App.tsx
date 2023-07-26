@@ -5,11 +5,23 @@ import { PodcastPreview } from './components/Podcast-Preview'
 import { Footer } from './components/Footer'
 import { Button, CircularProgress } from '@mui/material';
 
+
 import { FavoritesPage } from './components/FavoritesPage'; // Import the FavoritesPage component
 
  
-
+type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
+
+type ShowPreview = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  seasons: Seasons;
+  genres: Array<string>;
+  updated: Date;
+};
+
 
 type Show = {
   id: string;
@@ -40,7 +52,7 @@ type Episodes = [
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Added a state variable to track loading status
-  const [favorites, setFavorites] = useState<ShowOriginalData>([]);
+  const [favorites, setFavorites] = useState<AllShowData>([]);
 
 
   useEffect(() => {
@@ -93,7 +105,8 @@ export const App: React.FC = () => {
         <PodcastPreview
          data= {podcastData}
          showIds={showId}
-         favorites={favorites}
+        // favorites={favorites}
+        // setFavorites={setFavorites}
         />
         <Footer/>
         
