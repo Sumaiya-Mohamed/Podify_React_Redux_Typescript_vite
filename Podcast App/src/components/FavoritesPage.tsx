@@ -1,9 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState, useAppDispatch } from '../store';
+import { RootState, useAppDispatch } from '../store/store';
 import { FilterBar } from './FavoritesFilterBar';
-import { addToFavorites, removeFromFavorites, clearFavorites } from '../store';
+import { Footer } from './Footer';
+import { addToFavorites, removeFromFavorites, clearFavorites } from '../store/favoritesSlice';
 
 type FavoriteShowData = Array<SelectedShow>;
 
@@ -38,8 +39,19 @@ export const FavoritesPage: React.FC = () => {
   const backToHome = () => {
     navigate('/');
   };
+  
   const handleSearch = (query: string) => {
-    // You can handle search logic here if needed
+    const filteredShows = favorites.filter((show) =>
+      show.title.toLowerCase().includes(query.toLowerCase())
+    );
+
+    // If the search query is empty, reset filteredShows to an empty array
+    dispatch(clearFavorites());
+    filteredShows.forEach((show) => {
+      dispatch(addToFavorites(show))
+    })
+    //setFavorites(query.trim() === '' ? [] : filteredShows);
+    console.log(filteredShows);
   };
 
   const handleSort = (option: string) => {
@@ -70,8 +82,7 @@ export const FavoritesPage: React.FC = () => {
     <div>
       <div className="header__container">
         <div className="left__elements">
-          <img className="podcast__img" src="./src/assets/mic.png" alt="mic icon" />
-          <h1 className="podcast__name">Podify</h1>
+          <h1 className="podcast__name">Favorites</h1>
         </div>
         <div className="right__elements">
           <button onClick={backToHome} className="favorites__button">
@@ -100,6 +111,7 @@ export const FavoritesPage: React.FC = () => {
           </div>
         ))}
       </div>
+      <Footer />
     </div>
   );
 };

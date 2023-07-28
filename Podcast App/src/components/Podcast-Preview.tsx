@@ -7,8 +7,8 @@ import { Button, CircularProgress } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store';
-import { addToFavorites, removeFromFavorites, clearFavorites } from '../store';
+import { RootState, AppDispatch } from '../store/favoritesSlice';
+import { addToFavorites, removeFromFavorites, clearFavorites } from '../store/favoritesSlice';
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>

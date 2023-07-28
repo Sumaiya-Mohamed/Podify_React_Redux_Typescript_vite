@@ -28,7 +28,7 @@ type SelectedShow = {
 // Define the initial state for favorites
 const initialFavoritesState: SelectedShow[] = [];
 
-const favoritesSlice = createSlice({
+export const favoritesSlice = createSlice({
     name: 'favorites',
     initialState: initialFavoritesState,
     reducers: {
@@ -46,16 +46,6 @@ const favoritesSlice = createSlice({
   });
 
 export const { addToFavorites, removeFromFavorites, clearFavorites } = favoritesSlice.actions;
+export default favoritesSlice.reducer;
 
 
-// Create the Redux store
-export const store = configureStore({
-    reducer: {
-      favorites: favoritesSlice.reducer, // Use favoritesSlice.reducer instead of favoritesReducer
-    },
-  });
-
-// Define the types for dispatch and selector hooks
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export const useAppDispatch = () => useDispatch<AppDispatch>();

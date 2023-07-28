@@ -23,12 +23,12 @@ type SelectedShow = {
 };
 
 type FilterBarProps = {
-  favorites: FavoriteShowData;
+ // favorites: FavoriteShowData;
   onSort: (sortOption: string) => void; 
   onSearch: (query: string) => void;
 };
 
-export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, favorites, onSort }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortShows, setSortShows] = useState<string>('');
 
@@ -53,7 +53,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, favorites, onSor
 
   return (
     <div>
-      <h3 className="heading__check">Check out our available shows!</h3>
+      <h3 className="heading__check">Check out all your Favs!</h3>
       <div className="filter__bar">
         <form className="search__container" onSubmit={handleSubmit}>
           <label htmlFor="search" className="search__label">
@@ -87,6 +87,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, favorites, onSor
           </select>
         </div>
       </div>
+    
     </div>
   );
 };
