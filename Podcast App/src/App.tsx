@@ -6,7 +6,7 @@ import { Footer } from './components/Footer'
 import {CircularProgress } from '@mui/material';
 
 
-import { FavoritesPage } from './components/FavoritesPage'; // Import the FavoritesPage component
+
 
  
 type AllShowData = Array<ShowPreview>;
@@ -52,7 +52,7 @@ type Episodes = [
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true); // Added a state variable to track loading status
-  const [favorites, setFavorites] = useState<AllShowData>([]);
+
 
 
   useEffect(() => {

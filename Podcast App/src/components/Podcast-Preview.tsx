@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback} from 'react';
 import { FilterBar } from './Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import { Button, CircularProgress } from '@mui/material';
+import  {CircularProgress } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store/favoritesSlice';
-import { addToFavorites, removeFromFavorites, clearFavorites } from '../store/favoritesSlice';
+import { RootState, AppDispatch } from '../store/store';
+import { addToFavorites, removeFromFavorites} from '../store/favoritesSlice';
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
@@ -35,14 +35,6 @@ type Show = {
 };
 
 
-type ActiveShowData = {
-  id: string;
-  image: string;
-  description: string;
-  genres: Array<string>
-  seasons: Seasons
-}
-
 type PodcastPreviewProps = {
   data: ShowOriginalData
   showIds: Array<string>
@@ -64,7 +56,6 @@ type Episodes = {
   file: string,
 };
 
-type FavoriteShowData = Array<SelectedShow>;
 
 type SelectedShow = {
     id: string;

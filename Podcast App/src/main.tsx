@@ -5,7 +5,7 @@ import { FavoritesPage } from './components/FavoritesPage.tsx';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { Provider, useSelector } from 'react-redux';
 import { RootState, store } from './store/store.ts';
-import { SignUp } from './components/SignUp.tsx'; 
+//import { SignUp } from './components/SignUp.tsx'; 
 import './css/Header.css'
 import './css/Main.css'
 import './css/Carousal.css'

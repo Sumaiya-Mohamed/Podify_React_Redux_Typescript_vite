@@ -52,9 +52,8 @@ type CarouselProps = {
       <h3 className="carousal__heading">You may be interested in...</h3>
       <div className="carousal__container">
       <Slider {...settings}>
-        {data.map((show, index) => {
+        {data.map((show) => {
           const updatedDate = new Date(show.updated);
-          const updatedYear = updatedDate.getFullYear();
 
           return (
             

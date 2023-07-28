@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store/store';
 import { FilterBar } from './FavoritesFilterBar';
 import { Footer } from './Footer';
-import { addToFavorites, removeFromFavorites, clearFavorites } from '../store/favoritesSlice';
+import { addToFavorites, clearFavorites } from '../store/favoritesSlice';
 
-type FavoriteShowData = Array<SelectedShow>;
 
 type SelectedShow = {
   id: string;

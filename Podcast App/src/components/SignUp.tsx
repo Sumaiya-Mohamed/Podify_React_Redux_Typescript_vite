@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+/*import React, { useState } from 'react';
 import { supabase } from '../supabase';
 import { setUser } from '../store/authSlice';
 import { RootState, useAppDispatch } from '../store/store';
@@ -8,11 +8,6 @@ interface User {
   id: string;
   email: string;
   // Add other user properties you expect to receive
-}
-
-interface AuthError {
-  message: string;
-  // Add other error properties you expect to receive
 }
 
 export const SignUp: React.FC = () => {
@@ -67,4 +62,4 @@ export const SignUp: React.FC = () => {
     </div>
   );
 };
-
+*/

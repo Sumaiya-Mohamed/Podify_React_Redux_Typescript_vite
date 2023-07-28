@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 
-type FavoriteShowData = Array<SelectedShow>;
 
 type SelectedShow = {
   id: string;
