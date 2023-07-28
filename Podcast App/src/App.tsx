@@ -3,7 +3,7 @@ import { Header } from './components/Header'
 import { Carousal } from './components/Carousal'
 import { PodcastPreview } from './components/Podcast-Preview'
 import { Footer } from './components/Footer'
-import { Button, CircularProgress } from '@mui/material';
+import {CircularProgress } from '@mui/material';
 
 
 import { FavoritesPage } from './components/FavoritesPage'; // Import the FavoritesPage component
