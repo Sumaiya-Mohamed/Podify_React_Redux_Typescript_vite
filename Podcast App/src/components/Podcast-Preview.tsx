@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { FilterBar } from './Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
@@ -8,10 +7,18 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { addToFavorites, removeFromFavorites} from '../store/favoritesSlice';
+import { addToEpisodeFavorites, removeFromEpisodeFavorites} from '../store/favoriteEpisodesSlice';
+import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
+import CloseIcon from '@mui/icons-material/Close';
+import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
+import ReactPlayer from 'react-player';
+
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
+type FavoriteShowData = Array<FavoriteShow>;
+type FavoriteEpisodeData = Array<Episodes>;
+
 
 type ShowPreview = {
   id: string;
@@ -54,34 +61,38 @@ type Episodes = {
   description: string,
   episode: number,
   file: string,
+  addedAt: string; 
 };
 
 
-type SelectedShow = {
-    id: string;
+type FavoriteShow = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  seasons: Array<{
+    season: number;
     title: string;
-    description: string;
     image: string;
-    seasons: Array<{
-      season: number;
+    episodes: Array<{
       title: string;
-      image: string;
-      episodes: Array<{
-        title: string;
-        description: string;
-        episode: number;
-        file: string;
-      }>;
+      description: string;
+      episode: number;
+      file: string;
     }>;
-    genres: Array<string>;
-    updated: Date;
-  };
+  }>;
+  genres: Array<string>;
+  updated: Date;
+  favoriteEpisodeData: FavoriteEpisodeData;
+};
+
+
 
 export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
   const [dialogOpen, setDialogOpen] = useState<boolean> (false);   // A boolean value to toggle the dialog between open and close.
-  const [selectedShow, setSelectedShow] = useState<ShowPreview> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
+  const [selectedShow, setSelectedShow] = useState<ShowPreview | FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows information.
   const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null);
@@ -90,9 +101,14 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const [sortOption, setSortOption] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [episode,setEpisode] = useState<Episodes>()
+  const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
 
-  const favorites = useSelector((state: RootState) => state.favorites);
+  const favoriteEpisode = useSelector((state: RootState) => state.favoriteEpisode);
+  const favoriteShow = useSelector((state: RootState) => state.favoriteShow);
   const dispatch = useDispatch<AppDispatch>(); //This will be used to update the favorites state array.
+  const audioRef = useRef(null);
 
   useEffect(() => {
 
@@ -126,22 +142,19 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   useEffect(() => {
     // Initialize favoriteMap based on favorites
     const newFavoriteMap: Record<string, boolean> = {};
-    favorites.forEach((favShow) => {
-      newFavoriteMap[favShow.id] = true;
+    favoriteEpisode.forEach((favShow) => {
+      newFavoriteMap[favShow.title] = true;
     });
     setFavoriteMap(newFavoriteMap);
-  }, [favorites]);
+  }, [favoriteEpisode]);
   
   const findShowById = (showId: string) => {
-    const foundShow = updatedShowData.find((show) => show.id === showId);
-    console.log(updatedShowData)
-  console.log("Found Show Data:", foundShow);
+  const foundShow = updatedShowData.find((show) => show.id === showId);
   return foundShow;
   };
 
   const openDialog = (show: ShowPreview) => {
     const selectedShowData = findShowById(show.id);
-    console.log("Selected Show Data:", selectedShowData);
      const activeShowsSeasons = selectedShowData?.seasons // The seasons of the active show.
     
      if (activeShowsSeasons) {
@@ -157,8 +170,21 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
 
 
   const closeDialog = () => {
-    setDialogOpen(false);
-    document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
+    const shouldClose = window.confirm('Would you like to continue listening?');
+
+    if (shouldClose) {
+      // Play the audio if available
+      setIsAudioPlaying(true);
+      console.log(isAudioPlaying)
+      setDialogOpen(false)
+      document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
+    } else {
+      // If the user clicked "Cancel", pause the audio if available
+      setIsAudioPlaying(false)
+      setDialogOpen(false)
+      document.body.classList.remove('modal-open'); 
+    }
+    setShowAudioSettings(false)
   };
 
  
@@ -166,7 +192,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const handlePlayButtonClick = (episodeUrl: string) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
-    console.log(currentEpisodeUrl)
+    setShowAudioSettings(true)
   };
 
  // Add a new function to handle the season selection from the dropdown
@@ -207,20 +233,58 @@ const handleSort = (sortOption: string) => {
 };
 
 
-// Function to handle adding/removing show from favorites
-const handleAddToFavorites = () => {
-  if (!selectedShow) return;
+const handleAddToFavorites = (episode: Episodes) => {
+  const episodeId = episode.title; // Assuming episode titles are unique identifiers
 
-  // Toggle the isFavorite state for the selected show
-  setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+  // Check if the episode is already a favorite
+  const isEpisodeFavorite = favoriteEpisode.some((favEpisode) => favEpisode.title === episode.title);
 
-  // Dispatch the appropriate action to add or remove the selected show from favorites
-  if (!isFavorite) {
-    dispatch(addToFavorites(selectedShow));
+  if (!isEpisodeFavorite) {
+    // If the episode is not a favorite, add it to the favoriteEpisode array
+    const addedAt = new Date().toLocaleDateString('en-US', { dateStyle: 'long' });
+    const newFavoriteEpisode: Episodes = { ...episode, addedAt };
+    dispatch(addToEpisodeFavorites(newFavoriteEpisode));
+
+    // Find the selected show in the favoriteShow array
+    const existingShow = favoriteShow.find((show) => show.id === selectedShow.id);
+
+    if (existingShow) {
+      // If the show already exists, update its favoriteEpisodeData array.
+      const updatedShow = {
+        ...existingShow,
+        favoriteEpisodeData: [...existingShow.favoriteEpisodeData, newFavoriteEpisode],
+      };
+      dispatch(addToShowFavorites(updatedShow));
+    } else {
+      // If the show does not exist, create a new entry
+      const newShow: FavoriteShow = {
+        ...selectedShow,
+        favoriteEpisodeData: [newFavoriteEpisode],
+      };
+      dispatch(addToShowFavorites(newShow));
+    }
   } else {
-    dispatch(removeFromFavorites(selectedShow.id));
+    // If the episode is already a favorite, remove it from the favoriteEpisode array
+    dispatch(removeFromEpisodeFavorites(episodeId));
+
+    // Find the selected show in the favoriteShow array
+    const existingShow = favoriteShow.find((show) => show.id === selectedShow.id);
+
+    if (existingShow) {
+      // If the show exists, remove the episode from its favoriteEpisodeData array
+      const updatedEpisodes = existingShow.favoriteEpisodeData.filter((ep) => ep.title !== episode.title);
+      const updatedShow = { ...existingShow, favoriteEpisodeData: updatedEpisodes };
+      dispatch(addToShowFavorites(updatedShow));
+    }
   }
 };
+
+
+// Function to handle mini audio close.
+const handleMiniAudioClose = () => {
+  setIsAudioPlaying(false);
+};
+
 
   return (
     <div>
@@ -272,20 +336,19 @@ const handleAddToFavorites = () => {
             <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
-            <button className="favorite__button" onClick={handleAddToFavorites}>
-                {favoriteMap[selectedShow.id] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-              </button>
-            {currentEpisodeUrl &&  (
-                 <div>
-                 <AudioPlayer
-                   className="audio__player"
-                   src={currentEpisodeUrl}
-                   onPlay={() => setIsPlaying(true)}
-                   onPause={() => setIsPlaying(false)}
-                   onEnded={() => setIsPlaying(false)}
-                  />
-            </div>
-            )}
+          
+              {currentEpisodeUrl && showAudioSettings &&(
+          <div>
+            <AudioPlayer
+              ref={audioRef}
+              className="audio__player"
+              src={currentEpisodeUrl}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
+            />
+          </div>
+         )}
             </div>
             <div >
             <div className="selectedshow__content">
@@ -317,7 +380,9 @@ const handleAddToFavorites = () => {
                     </option>
                   ))}
                 </select>
+
               </div>
+
 
                  {/* Using conditional rendering to display the first season information */}
                  {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
@@ -327,11 +392,16 @@ const handleAddToFavorites = () => {
                   <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
                   </div>
                   <ul className="seasons__episodes">
-                    {selectedShow.seasons[0].episodes.map((episode, index) => (
+                    {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
                   
                       <li key={index}  className="episodes">
                        
-                        
+                        <div  
+                        className="play__button"
+                        onClick={() =>{ handlePlayButtonClick(episode.file)
+                                             setIsPlaying(true)
+                              }
+                              }>
                             <p className="episode__number">
                               Episode {episode.episode}: 
                             </p>
@@ -342,14 +412,11 @@ const handleAddToFavorites = () => {
                             <p className="episode__description">Description: {episode.description}</p>
                          
                           </div>
-                          <div className="play__button">
-                            <img src="./src/assets/play-button.png"
-                              alt="Play Button"
-                              onClick={() => handlePlayButtonClick(episode.file)}
-                            >
-                            </img>
+                          
+                          <button className="favorite__button" onClick={() => handleAddToFavorites(episode)}>
+                            {favoriteMap[episode.title] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                          </button>
                           </div>
-                       
                       </li>
                      
                     ))}
@@ -368,27 +435,31 @@ const handleAddToFavorites = () => {
                   
                   <ul className="seasons__episodes">
                     {selectedShow.seasons[selectedSeasonIndex as number].episodes.map((episode, index) => (
-                
-                      <li key={index}  className="episodes">
-                        
-                          <div className="episode__number">
-                           <p>
-                            Episode {episode.episode}
+                       <li key={index}  className="episodes">
+                       
+                       <div  
+                       
+                       onClick={() =>{ handlePlayButtonClick(episode.file)
+                                            setIsPlaying(true)
+                             }
+                             }>
+                           <p className="episode__number">
+                             Episode {episode.episode}: 
                            </p>
-                          </div>
-                          <div className="episode__details">
+                         
+                        
+                         <div className="episode__details">
                            <p>{episode.title}</p>
-                           <p>Description: {episode.description}</p>
-                          </div>
-                          <div className="play__button">
-                           <img src="./src/assets/play-button.png"
-                             alt="Play Button"
-                             onClick={() => handlePlayButtonClick(episode.file)}
-                            >
-                           </img>
-                          </div>
-                      
-                      </li>
+                           <p className="episode__description">Description: {episode.description}</p>
+                        
+                         </div>
+                         
+                         <button className="favorite__button" onClick={() => handleAddToFavorites(episode)}>
+                           {favoriteMap[episode.title] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                         </button>
+                         </div>
+                     </li>
+                    
                    
                     ))}
                   </ul>
@@ -402,6 +473,26 @@ const handleAddToFavorites = () => {
             </button>
           </dialog>
         </div>
+      )}
+      {isAudioPlaying && (
+        <div className="mini__audiocontainer">
+        <div className="mini__audio">
+          <img src={selectedShow.image}></img>
+          <AudioPlayer
+              ref={audioRef}
+              autoPlay
+              className="mini__audioplayer"
+              src={currentEpisodeUrl}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
+            />
+          <button 
+          onClick={handleMiniAudioClose}
+          className="mini__cancel"
+           ><CloseIcon /></button>
+        </div>
+       </div>
       )}
      </div>
      <div className="backbutton__container">
