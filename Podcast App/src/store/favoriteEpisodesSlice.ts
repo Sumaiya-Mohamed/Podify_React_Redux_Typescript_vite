@@ -10,6 +10,7 @@ type Episodes = {
   episode: number,
   file: string,
   addedAt: string; 
+  id: string,
 };
 
 // Define the initial state for favorites

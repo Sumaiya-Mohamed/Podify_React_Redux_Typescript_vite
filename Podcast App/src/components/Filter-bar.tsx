@@ -28,15 +28,21 @@ type Episodes = {
   file: string;
 };
 
+type SetStateFunction<T> = React.Dispatch<React.SetStateAction<T>>;
+
 type FilterBarProps = {
   filteredShows: AllShowData;
   onSort: (sortOption: string) => void; 
   onSearch: (query: string) => void;
+  allGenres: Array<string>;
+  setFilteredShows: SetStateFunction<AllShowData>
+  handleGenreFilter: (genre: string) => void;
 };
 
-export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, onSort }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, onSort, allGenres, setFilteredShows, handleGenreFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortShows, setSortShows] = useState<string>('');
+  const [genre, setGenre] = useState<string>('')
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
@@ -58,6 +64,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
     onSort(sortOption);
   };
 
+  const handleSortGenre = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const genre = event.target.value;
+    setGenre(genre); // Use setGenre to set the selected genre in the state.
+    handleGenreFilter(genre); // Pass the selected genre to the handleGenreFilter function.
+  };
   return (
     <div>
       <h3 className="heading__check">Check out our available shows!</h3>
@@ -92,6 +103,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
             <option value="most recent">MOST RECENT</option>
             <option value="least recent">LEAST RECENT</option>
           </select>
+        </div>
+
+        <div className="genre__container">
+          <div className="genre__heading">
+            <p>Genre:</p>
+          </div>
+          <select className="genre__select" value={genre} onChange={handleSortGenre}>
+          <option value="">All Genres</option>
+          {allGenres.map((genre,index) => (
+            <option key={index} value={genre}>
+              {genre}
+            </option>
+          ))}
+        </select>
         </div>
       </div>
     </div>

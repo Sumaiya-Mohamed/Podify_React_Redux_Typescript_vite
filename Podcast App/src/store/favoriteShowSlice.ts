@@ -12,10 +12,10 @@ type Episodes = {
   episode: number,
   file: string,
   addedAt: string; 
+  id: string,
 };
 
 type FavoriteShow = {
-    [x: string]: any;
     id: string;
     title: string;
     description: string;
@@ -33,7 +33,6 @@ type FavoriteShow = {
     }>;
     genres: Array<string>;
     updated: Date;
-    favoriteEpisodeData: FavoriteEpisodeData;
   };
 
 

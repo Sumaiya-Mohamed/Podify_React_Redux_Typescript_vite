@@ -10,9 +10,7 @@ import { RootState, AppDispatch } from '../store/store';
 import { addToEpisodeFavorites, removeFromEpisodeFavorites} from '../store/favoriteEpisodesSlice';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
-import PlayCircleOutlineIcon from '@mui/icons-material/PlayCircleOutline';
-import ReactPlayer from 'react-player';
-
+import { v4 as uuidv4 } from 'uuid';
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
@@ -62,6 +60,7 @@ type Episodes = {
   episode: number,
   file: string,
   addedAt: string; 
+  id: string,
 };
 
 
@@ -83,7 +82,6 @@ type FavoriteShow = {
   }>;
   genres: Array<string>;
   updated: Date;
-  favoriteEpisodeData: FavoriteEpisodeData;
 };
 
 
@@ -104,6 +102,8 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [episode,setEpisode] = useState<Episodes>()
   const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
+  const [genreOption, setGenreOption] = useState<string>('')
+ 
 
   const favoriteEpisode = useSelector((state: RootState) => state.favoriteEpisode);
   const favoriteShow = useSelector((state: RootState) => state.favoriteShow);
@@ -132,6 +132,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
         console.log('Error:', error);
       } finally {
         setIsLoading(false);
+      
       }
     };
   
@@ -142,11 +143,12 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   useEffect(() => {
     // Initialize favoriteMap based on favorites
     const newFavoriteMap: Record<string, boolean> = {};
-    favoriteEpisode.forEach((favShow) => {
-      newFavoriteMap[favShow.title] = true;
+    favoriteShow.forEach((favShow) => {
+      newFavoriteMap[favShow.id] = true;
     });
     setFavoriteMap(newFavoriteMap);
-  }, [favoriteEpisode]);
+  }, [favoriteShow]);
+  
   
   const findShowById = (showId: string) => {
   const foundShow = updatedShowData.find((show) => show.id === showId);
@@ -232,53 +234,38 @@ const handleSort = (sortOption: string) => {
   }
 };
 
+const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
 
-const handleAddToFavorites = (episode: Episodes) => {
-  const episodeId = episode.title; // Assuming episode titles are unique identifiers
 
-  // Check if the episode is already a favorite
-  const isEpisodeFavorite = favoriteEpisode.some((favEpisode) => favEpisode.title === episode.title);
 
-  if (!isEpisodeFavorite) {
-    // If the episode is not a favorite, add it to the favoriteEpisode array
-    const addedAt = new Date().toLocaleDateString('en-US', { dateStyle: 'long' });
-    const newFavoriteEpisode: Episodes = { ...episode, addedAt };
-    dispatch(addToEpisodeFavorites(newFavoriteEpisode));
-
-    // Find the selected show in the favoriteShow array
-    const existingShow = favoriteShow.find((show) => show.id === selectedShow.id);
-
-    if (existingShow) {
-      // If the show already exists, update its favoriteEpisodeData array.
-      const updatedShow = {
-        ...existingShow,
-        favoriteEpisodeData: [...existingShow.favoriteEpisodeData, newFavoriteEpisode],
-      };
-      dispatch(addToShowFavorites(updatedShow));
-    } else {
-      // If the show does not exist, create a new entry
-      const newShow: FavoriteShow = {
-        ...selectedShow,
-        favoriteEpisodeData: [newFavoriteEpisode],
-      };
-      dispatch(addToShowFavorites(newShow));
-    }
+const handleGenreFilter = (genre: string) => {
+  setGenreOption(genre);
+  
+  if (genre) {
+    const filteredByGenre = updatedShowData.filter((show) =>
+      show.genres?.includes(genre) // Use optional chaining here to avoid accessing undefined genres.
+    );
+    setFilteredShows(filteredByGenre);
+    console.log('yay');
   } else {
-    // If the episode is already a favorite, remove it from the favoriteEpisode array
-    dispatch(removeFromEpisodeFavorites(episodeId));
-
-    // Find the selected show in the favoriteShow array
-    const existingShow = favoriteShow.find((show) => show.id === selectedShow.id);
-
-    if (existingShow) {
-      // If the show exists, remove the episode from its favoriteEpisodeData array
-      const updatedEpisodes = existingShow.favoriteEpisodeData.filter((ep) => ep.title !== episode.title);
-      const updatedShow = { ...existingShow, favoriteEpisodeData: updatedEpisodes };
-      dispatch(addToShowFavorites(updatedShow));
-    }
+    setFilteredShows(updatedShowData);
+    console.log('nay');
   }
 };
 
+const handleAddToFavorites = () => {
+  if (!selectedShow) return;
+
+  // Toggle the isFavorite state for the selected show
+  setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+
+  // Dispatch the appropriate action to add or remove the selected show from favorites
+  if (!isFavorite) {
+    dispatch(addToShowFavorites(selectedShow));
+  } else {
+    dispatch(removeFromShowFavorites(selectedShow.id));
+  }
+};
 
 // Function to handle mini audio close.
 const handleMiniAudioClose = () => {
@@ -292,6 +279,9 @@ const handleMiniAudioClose = () => {
        onSearch={handleSearch}
        filteredShows={filteredShows}
        onSort={handleSort} // Pass the handleSort function as a prop to FilterBar
+       allGenres={allGenres}
+       setFilteredShows={setFilteredShows}
+       handleGenreFilter= {handleGenreFilter}
       />
     
      {isLoading ? (
@@ -336,7 +326,9 @@ const handleMiniAudioClose = () => {
             <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
-          
+            <button className="favorite__button" onClick={() => handleAddToFavorites()}>
+                           {favoriteMap[selectedShow.id] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                           </button>
               {currentEpisodeUrl && showAudioSettings &&(
           <div>
             <AudioPlayer
@@ -413,9 +405,7 @@ const handleMiniAudioClose = () => {
                          
                           </div>
                           
-                          <button className="favorite__button" onClick={() => handleAddToFavorites(episode)}>
-                            {favoriteMap[episode.title] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-                          </button>
+                          
                           </div>
                       </li>
                      
@@ -454,9 +444,7 @@ const handleMiniAudioClose = () => {
                         
                          </div>
                          
-                         <button className="favorite__button" onClick={() => handleAddToFavorites(episode)}>
-                           {favoriteMap[episode.title] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-                         </button>
+                      
                          </div>
                      </li>
                     

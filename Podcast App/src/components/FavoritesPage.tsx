@@ -100,12 +100,11 @@ export const FavoritesPage: React.FC = () => {
   const [allFavoriteShows, setAllFavoriteShows] = useState<FavoriteShowData>([])
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [savedEpisodes, setSavedEpisodes] = useState<FavoriteEpisodeData>()
+  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
+  const [renderedShows, setRenderedShows] = useState([]);
+ 
   
-  const [renderedShows, setRenderedShows] = useState<string[]>(() => {
-    // Initialize with the IDs of all favorite shows' data
-    return favoriteShow.map((show) => show.id);
-  });
-
+  
   const [sortOption, setSortOption] = React.useState<string>('');
   const audioRef = useRef(null);
 
@@ -118,51 +117,44 @@ export const FavoritesPage: React.FC = () => {
   
   
   const handleSearch = (query: string) => {
-    const filteredShows = favoriteEpisode.filter((episode) =>
-      episode.title.toLowerCase().includes(query.toLowerCase())
+    const filteredShows = favoriteShow.filter((show) =>
+      show.title.toLowerCase().includes(query.toLowerCase())
     );
 
     // If the search query is empty, reset filteredShows to an empty array
-    dispatch(clearEpisodeFavorites());
-    filteredShows.forEach((episode) => {
-      dispatch(addToEpisodeFavorites(episode))
+    dispatch(clearShowFavorites());
+    filteredShows.forEach((show) => {
+      dispatch(addToShowFavorites(show))
     })
     //setFavorites(query.trim() === '' ? [] : filteredShows);
-    console.log(filteredShows);
   };
 
   const handleSort = (option: string) => {
     setSortOption(option);
 
     if (option !== '') {
-      const sortedEpisodes = [...favoriteEpisode];
-      sortedEpisodes.sort((a, b) => {
+      const sortedShows = [...favoriteShow];
+      sortedShows.sort((a, b) => {
         if (option === 'a-z') {
           return a.title.localeCompare(b.title);
         } else if (option === 'z-a') {
           return b.title.localeCompare(a.title);
         } else if (option === 'most recent') {
-          return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+          return new Date(b.updated).getTime() - new Date(a.updated).getTime();
         } else if (option === 'least recent') {
-          return new Date(a.addedAt).getTime() - new Date(b.addedAt).getTime();
+          return new Date(a.updated).getTime() - new Date(b.updated).getTime();
         }
         return 0;
       });
       // Dispatch the action to update favorites in the store
-      dispatch(clearEpisodeFavorites());
-      sortedEpisodes.forEach((episode) => {
-        dispatch(addToEpisodeFavorites(episode));
+      dispatch(clearShowFavorites());
+      sortedShows.forEach((show) => {
+        dispatch(addToShowFavorites(show));
       });
     }
   };
 
-  const findShowById = (showId: string) => {
-  const foundShow = favoriteShow.find((show) => show.id === showId);
-  console.log("Found Show Data:", foundShow);
-  return foundShow;
-  };
-
-
+  
  
  
   // Function to handle play button click
@@ -182,7 +174,33 @@ const handleReset = () => {
   dispatch(clearEpisodeFavorites())
 }
 
-const saTimezone = 'Africa/Johannesburg';
+const findShowById = (showId: string) => {
+  const foundShow = favoriteShow.find((show) => show.id === showId);
+  return foundShow;
+  };
+
+
+/*const openDialog = (show: ShowPreview) => {
+  const selectedShowData = findShowById(show.id);
+   const activeShowsSeasons = selectedShowData?.favoriteEpisodeData // The seasons of the active show.
+  
+   if (activeShowsSeasons) {
+  
+    setSelectedShow(selectedShowData);
+    setSavedEpisodes(activeShowsSeasons);
+    setSelectedEpisodeIndex(undefined); // Reset the selected season index when a new show is opened.
+  }
+ 
+  document.body.classList.add('modal-open');
+  setDialogOpen((prevDialogOpen) => !prevDialogOpen);
+};*/
+
+const closeDialog = () => {
+    setDialogOpen(false)
+    document.body.classList.remove('modal-open'); 
+
+
+};
 
 return (
  <div>
@@ -200,28 +218,116 @@ return (
         </div>
       </div>
       <FilterBar onSearch={handleSearch} onSort={handleSort} />
-      <div className="favorites__container">
-      {favoriteEpisode.map((episode) => {
-
+      <div className="preview__container">
+      {favoriteShow.map((show) => {
+               if (renderedShows.includes(show.title)) {
+                return null; // Skip rendering this show
+              }
             return (
-              <button key={episode.title} className={`favorites__information ${favoriteShow.length === 1 ? 'favorites__information-large' : ''}`}
-              onClick={() => setIsAudioPlaying(true)}
-              >
-                <div>
-                 <h3>{episode.title}</h3>
-                 <p>{episode.description}</p>
-                 <p>Added At:  {new Date(episode.addedAt).toLocaleDateString('en-US', { dateStyle: 'long' })}  {new Date(episode.addedAt).toLocaleTimeString('en-US',{timeStyle: "short"})}</p>
-               </div>
+              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length <= 3 ? 'preview__information-medium' : ''}`}>
+                   <div>
+           <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
+           src={show.image} alt={show.title} />
+           </div>
+           <div className="preview__content">
+             <h3 className="preview__title">{show.title}</h3>
+             <h3> Seasons:{show.seasons.length}</h3>
+             <div className="genres-container">
+               <p className="show__genre"> 
+                 <span className="genre__title">Genres: </span>
+                 {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'Not applicable'}
+               </p>
+             </div>
+             <p>Updated:  {new Date(show.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
+           </div>
+          
               </button>
             );
           }
 
         )}
   
-       
-         {isAudioPlaying &&(
-        <div className="favoritesmini__audiocontainer">
-        <div className="favoritesmini__audio">
+       {dialogOpen && selectedShow && savedEpisodes && (
+        <div className="dialog__container">
+          <div className="blur__background" />
+          <dialog className="dialog">
+          <div className="selectedshow__mp3">
+            <div>
+            <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
+            </div>
+            <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
+          
+              {currentEpisodeUrl && (
+          <div>
+            <AudioPlayer
+              ref={audioRef}
+              className="audio__player"
+              src={currentEpisodeUrl}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onEnded={() => setIsPlaying(false)}
+            />
+          </div>
+         )}
+            </div>
+            <div >
+            <div className="selectedshow__content">
+              <p>
+                <span className="content__headings">Title:</span>{" "}
+                {selectedShow.title}
+              </p>
+              <p>
+                <span className="content__headings">Seasons:</span>{" "}
+                {selectedShow.seasons.length}
+              </p>
+              <p>
+                <span className="content__headings">Updated: </span>{" "}
+                {new Date(selectedShow.updated).toLocaleDateString("en-US", {
+                  dateStyle: "long",
+                })}
+              </p>
+              <p>
+                <span className="content__headings">Description: </span>
+                {selectedShow.description}
+              </p>
+            </div>
+            </div>
+            <ul className="seasons__episodes">
+                    {selectedShow.favoriteEpisodeData.map((episode: Episodes, index) => (
+                  
+                      <li key={index}  className="episodes">
+                       
+                        <div  
+                        className="play__button"
+                        onClick={() =>{ handlePlayButtonClick(episode.file)
+                                             setIsPlaying(true)
+                              }
+                              }>
+                            <p className="episode__number">
+                              Episode {episode.episode}: 
+                            </p>
+                          
+                         
+                          <div className="episode__details">
+                            <p>{episode.title}</p>
+                            <p className="episode__description">Description: {episode.description}</p>
+                         
+                          </div>
+                          </div>
+                      </li>
+                     
+                    ))}
+                  </ul>
+                  <button className="dialog__button" onClick={closeDialog}>
+                   Close
+                  </button>
+            </dialog>
+             </div>
+       )}
+
+           {isAudioPlaying &&(
+            <div className="favoritesmini__audiocontainer">
+            <div className="favoritesmini__audio">
           <AudioPlayer
               ref={audioRef}
               autoPlay
