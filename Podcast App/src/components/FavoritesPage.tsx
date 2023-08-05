@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store/store';
@@ -102,6 +102,7 @@ export const FavoritesPage: React.FC = () => {
   const [savedEpisodes, setSavedEpisodes] = useState<FavoriteEpisodeData>()
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
   const [renderedShows, setRenderedShows] = useState([]);
+  const [genreOption, setGenreOption] = useState<string>('')
  
   
   
@@ -114,7 +115,19 @@ export const FavoritesPage: React.FC = () => {
     navigate('/');
   };
 
-  
+  useEffect(() => {
+    const favoriteShowsFromLocalStorage = localStorage.getItem('favoriteShows');
+    if (favoriteShowsFromLocalStorage) {
+      const parsedFavorites: FavoriteShowData = JSON.parse(favoriteShowsFromLocalStorage);
+      setAllFavoriteShows(parsedFavorites);
+      // Step 3: Dispatch the favorites to the Redux store
+      dispatch(clearShowFavorites());
+      parsedFavorites.forEach((show) => {
+        dispatch(addToShowFavorites(show));
+      });
+    }
+  }, []);
+
   
   const handleSearch = (query: string) => {
     const filteredShows = favoriteShow.filter((show) =>
@@ -202,6 +215,36 @@ const closeDialog = () => {
 
 };
 
+const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
+
+
+
+const handleGenreFilter = (genre: string) => {
+  setGenreOption(genre);
+  
+  if (genre) {
+    const filteredByGenre = favoriteShow.filter((show) =>
+      show.genres?.includes(genre)
+    );
+    dispatch(clearShowFavorites()); // Clear existing favorites first.
+    filteredByGenre.forEach((show) => {
+      dispatch(addToShowFavorites(show)); // Dispatch filtered shows.
+    });
+    console.log('yay');
+  } else {
+    dispatch(clearShowFavorites()); // Clear existing favorites.
+    favoriteShow.forEach((show) => {
+      dispatch(addToShowFavorites(show)); // Dispatch all shows.
+    });
+    console.log('nay');
+  }
+};
+
+const clearFavorites = () => {
+  dispatch(clearShowFavorites());
+  localStorage.removeItem('favoriteShows');
+};
+
 return (
  <div>
       <div className="header__container">
@@ -212,12 +255,17 @@ return (
           <button onClick={backToHome} className="favorites__button">
             Back
           </button>
-          <button onClick={handleReset} className="favorites__reset">
+          <button onClick={clearFavorites} className="favorites__reset">
             Reset
           </button>
         </div>
       </div>
-      <FilterBar onSearch={handleSearch} onSort={handleSort} />
+      <FilterBar 
+      onSearch={handleSearch} 
+      onSort={handleSort} 
+      allGenres={allGenres}
+      handleGenreFilter= {handleGenreFilter}
+      />
       <div className="preview__container">
       {favoriteShow.map((show) => {
                if (renderedShows.includes(show.title)) {

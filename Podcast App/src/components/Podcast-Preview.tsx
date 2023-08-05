@@ -253,6 +253,15 @@ const handleGenreFilter = (genre: string) => {
   }
 };
 
+useEffect(() => {
+  updateFavoritesInLocalStorage(favoriteShow);
+}, [favoriteShow]);
+
+const updateFavoritesInLocalStorage = (favorites: FavoriteShowData) => {
+  localStorage.setItem('favoriteShows', JSON.stringify(favorites));
+};
+
+
 const handleAddToFavorites = () => {
   if (!selectedShow) return;
 
@@ -265,6 +274,8 @@ const handleAddToFavorites = () => {
   } else {
     dispatch(removeFromShowFavorites(selectedShow.id));
   }
+
+  updateFavoritesInLocalStorage(favoriteShow);
 };
 
 // Function to handle mini audio close.

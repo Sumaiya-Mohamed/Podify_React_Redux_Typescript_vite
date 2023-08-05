@@ -25,11 +25,14 @@ type FilterBarProps = {
  // favorites: FavoriteShowData;
   onSort: (sortOption: string) => void; 
   onSearch: (query: string) => void;
+  allGenres: Array<string>;
+  handleGenreFilter: (genre: string) => void;
 };
 
-export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenres, handleGenreFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortShows, setSortShows] = useState<string>('');
+  const [genre, setGenre] = useState<string>('')
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
@@ -48,6 +51,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort }) => {
 
     // Calls the onSort prop with the selected  option.
     onSort(sortOption);
+  };
+
+  const handleSortGenre = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const genre = event.target.value;
+    setGenre(genre); // Use setGenre to set the selected genre in the state.
+    handleGenreFilter(genre); // Pass the selected genre to the handleGenreFilter function.
   };
 
   return (
@@ -84,6 +93,20 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort }) => {
             <option value="most recent">MOST RECENT</option>
             <option value="least recent">LEAST RECENT</option>
           </select>
+        </div>
+
+        <div className="genre__container">
+          <div className="genre__heading">
+            <p>Genre:</p>
+          </div>
+          <select className="genre__select" value={genre} onChange={handleSortGenre}>
+          <option value="">All Genres</option>
+          {allGenres.map((genre,index) => (
+            <option key={index} value={genre}>
+              {genre}
+            </option>
+          ))}
+        </select>
         </div>
       </div>
     
