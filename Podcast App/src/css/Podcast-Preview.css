@@ -990,15 +990,10 @@
  .episode__details{
   width: 70%;
   height:fit-content;
-  text-overflow: ellipsis;
+
  }
 
- .episode__description{
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: pre-wrap;
-  
- }
+ 
 
  .play__button{
   cursor: pointer;

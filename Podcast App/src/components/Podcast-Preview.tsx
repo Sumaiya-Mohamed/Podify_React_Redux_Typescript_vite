@@ -172,12 +172,11 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
 
 
   const closeDialog = () => {
+    if(isPlaying){
     const shouldClose = window.confirm('Would you like to continue listening?');
-
     if (shouldClose) {
       // Play the audio if available
       setIsAudioPlaying(true);
-      console.log(isAudioPlaying)
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
     } else {
@@ -186,6 +185,9 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); 
     }
+  } 
+  setDialogOpen(false)
+  document.body.classList.remove('modal-open'); 
     setShowAudioSettings(false)
   };
 
@@ -454,7 +456,7 @@ const handleMiniAudioClose = () => {
                            <p className="episode__description">Description: {episode.description}</p>
                         
                          </div>
-                         
+                       
                       
                          </div>
                      </li>

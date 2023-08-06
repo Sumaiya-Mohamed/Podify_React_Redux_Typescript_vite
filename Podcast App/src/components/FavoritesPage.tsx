@@ -272,7 +272,7 @@ return (
                 return null; // Skip rendering this show
               }
             return (
-              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length <= 3 ? 'preview__information-medium' : ''}`}>
+              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}>
                    <div>
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
            src={show.image} alt={show.title} />
