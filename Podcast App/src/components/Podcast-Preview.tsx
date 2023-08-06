@@ -209,7 +209,7 @@ const handleSearch = (query: string) => {
   const filteredShows = updatedShowData.filter((show) =>
     show.title.toLowerCase().includes(query.toLowerCase())
   );
-  // If the search query is empty, reset filteredShows to an empty array
+  
   setFilteredShows(query.trim() === '' ? [] : filteredShows);
   console.log(filteredShows);
 };
