@@ -93,6 +93,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const [selectedShow, setSelectedShow] = useState<ShowPreview | FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows information.
+  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
   const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false); // This will be used to pause and play the audio.
   const [filteredShows, setFilteredShows] = useState<AllShowData>([]);
@@ -150,10 +151,11 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   }, [favoriteShow]);
   
   
-  const findShowById = (showId: string) => {
-  const foundShow = updatedShowData.find((show) => show.id === showId);
-  return foundShow;
+  const findShowById = (showId: string): ShowPreview | undefined => {
+    const foundShow = updatedShowData.find((show) => show.id === showId);
+    return foundShow;
   };
+  
 
   const openDialog = (show: ShowPreview) => {
     const selectedShowData = findShowById(show.id);
@@ -179,24 +181,31 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
       setIsAudioPlaying(true);
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
+      setCurrentEpisodeUrl(selectedSeasons[selectedSeasonIndex].episodes[selectedEpisodeIndex].file)
     } else {
       // If the user clicked "Cancel", pause the audio if available
       setIsAudioPlaying(false)
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); 
+      
     }
   } 
   setDialogOpen(false)
-  document.body.classList.remove('modal-open'); 
-    setShowAudioSettings(false)
+  document.body.classList.remove('modal-open');
+  setCurrentEpisodeUrl(null) 
   };
-
  
   // Function to handle play button click
   const handlePlayButtonClick = (episodeUrl: string) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
     setShowAudioSettings(true)
+
+     // Reset audio progress and to start playing audio from the start as there is only one audio file.
+     if (audioRef.current) {
+      audioRef.current.audio.current.currentTime = 0; // Reset progress to the beginning
+      audioRef.current.audio.current.play(); // Start playing
+    }
   };
 
  // Add a new function to handle the season selection from the dropdown
@@ -283,6 +292,7 @@ const handleAddToFavorites = () => {
 // Function to handle mini audio close.
 const handleMiniAudioClose = () => {
   setIsAudioPlaying(false);
+  setCurrentEpisodeUrl(null);
 };
 
 
@@ -293,7 +303,6 @@ const handleMiniAudioClose = () => {
        filteredShows={filteredShows}
        onSort={handleSort} // Pass the handleSort function as a prop to FilterBar
        allGenres={allGenres}
-       setFilteredShows={setFilteredShows}
        handleGenreFilter= {handleGenreFilter}
       />
     
@@ -389,7 +398,7 @@ const handleMiniAudioClose = () => {
               </div>
 
 
-                 {/* Using conditional rendering to display the first season information */}
+                 {/*First seasons information will display when dialog opens.*/}
                  {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
                 <div className="seasons__information">
                   <div className="seasons__title">

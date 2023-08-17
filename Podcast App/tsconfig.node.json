@@ -8,5 +8,5 @@
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["src", "public"]
+  "include": ["src", "public","vite.config.ts"]
 }

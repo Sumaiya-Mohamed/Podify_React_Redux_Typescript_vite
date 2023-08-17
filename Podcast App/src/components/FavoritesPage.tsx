@@ -51,7 +51,6 @@ type FavoriteShow = {
   }>;
   genres: Array<string>;
   updated: Date;
-  favoriteEpisodeData: FavoriteEpisodeData;
 };
 
 
@@ -103,6 +102,7 @@ export const FavoritesPage: React.FC = () => {
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
   const [renderedShows, setRenderedShows] = useState([]);
   const [genreOption, setGenreOption] = useState<string>('')
+  const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
  
   
   
@@ -167,6 +167,10 @@ export const FavoritesPage: React.FC = () => {
     }
   };
 
+  const handleSeasonSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const seasonIndex = parseInt(event.target.value);
+    setSelectedSeasonIndex(seasonIndex);
+  };
   
  
  
@@ -175,12 +179,20 @@ export const FavoritesPage: React.FC = () => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
     console.log(currentEpisodeUrl)
-  };
 
+     // Reset audio progress and start playing
+     if (audioRef.current) {
+      audioRef.current.audio.current.currentTime = 0; // Reset progress to the beginning
+      audioRef.current.audio.current.play(); // Start playing
+    }
+  };
+ 
+  const shows = favoriteShow
  
   // Function to handle mini audio close.
 const handleMiniAudioClose = () => {
   setIsAudioPlaying(false);
+  setCurrentEpisodeUrl(null)
 };
 
 const handleReset = () => {
@@ -193,29 +205,44 @@ const findShowById = (showId: string) => {
   };
 
 
-/*const openDialog = (show: ShowPreview) => {
-  const selectedShowData = findShowById(show.id);
-   const activeShowsSeasons = selectedShowData?.favoriteEpisodeData // The seasons of the active show.
-  
-   if (activeShowsSeasons) {
-  
-    setSelectedShow(selectedShowData);
-    setSavedEpisodes(activeShowsSeasons);
-    setSelectedEpisodeIndex(undefined); // Reset the selected season index when a new show is opened.
-  }
- 
-  document.body.classList.add('modal-open');
-  setDialogOpen((prevDialogOpen) => !prevDialogOpen);
-};*/
+  const openDialog = (show: ShowPreview) => {
+    const selectedShowData = findShowById(show.id);
+     const activeShowsSeasons = selectedShowData?.seasons // The seasons of the active show.
+    
+     if (activeShowsSeasons) {
+    
+      setSelectedShow(selectedShowData);
+      setSelectedSeasons(activeShowsSeasons);
+      setSelectedSeasonIndex(undefined); // Reset the selected season index when a new show is opened.
+    }
+   
+    document.body.classList.add('modal-open');
+    setDialogOpen((prevDialogOpen) => !prevDialogOpen);
+  };
 
-const closeDialog = () => {
-    setDialogOpen(false)
-    document.body.classList.remove('modal-open'); 
+  const closeDialog = () => {
+    if(isPlaying){
+    const shouldClose = window.confirm('Would you like to continue listening?');
+    if (shouldClose) {
+      // Play the audio if available
+      setIsAudioPlaying(true);
+      setDialogOpen(false)
+      document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
+      setCurrentEpisodeUrl(selectedSeasons[selectedSeasonIndex].episodes[selectedEpisodeIndex].file)
+    } else {
+      // If the user clicked "Cancel", pause the audio if available
+      setIsAudioPlaying(false)
+      setDialogOpen(false)
+      document.body.classList.remove('modal-open'); 
+      
+    }
+  } 
+  setDialogOpen(false)
+  document.body.classList.remove('modal-open'); 
+  setCurrentEpisodeUrl(null)
+  };
 
-
-};
-
-const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
+  const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
 
 
 
@@ -268,11 +295,11 @@ return (
       />
       <div className="preview__container">
       {favoriteShow.map((show) => {
-               if (renderedShows.includes(show.title)) {
-                return null; // Skip rendering this show
-              }
+              
             return (
-              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}>
+              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
+               onClick={() => openDialog(show)}
+              >
                    <div>
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
            src={show.image} alt={show.title} />
@@ -295,7 +322,7 @@ return (
 
         )}
   
-       {dialogOpen && selectedShow && savedEpisodes && (
+       {dialogOpen && selectedShow && (
         <div className="dialog__container">
           <div className="blur__background" />
           <dialog className="dialog">
@@ -310,6 +337,7 @@ return (
             <AudioPlayer
               ref={audioRef}
               className="audio__player"
+              autoPlay
               src={currentEpisodeUrl}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
@@ -340,8 +368,27 @@ return (
               </p>
             </div>
             </div>
-            <ul className="seasons__episodes">
-                    {selectedShow.favoriteEpisodeData.map((episode: Episodes, index) => (
+            <div className="select__container">
+                <select value={selectedSeasonIndex ?? ''} onChange={handleSeasonSelect} className="seasons__select">
+                  <option value=""> Select a season</option>
+                  {selectedShow.seasons.map((season, index) => ( // Render only the seasons of the selected show
+                    <option key={index} value={index}>
+                      {season.season}
+                    </option>
+                  ))}
+                </select>
+
+              </div>
+                 
+                   {/*First seasons information will display when dialog opens.*/}
+                   {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
+                <div className="seasons__information">
+                  <div className="seasons__title">
+                  <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
+                  <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
+                  </div>
+                  <ul className="seasons__episodes">
+                    {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
                   
                       <li key={index}  className="episodes">
                        
@@ -361,11 +408,58 @@ return (
                             <p className="episode__description">Description: {episode.description}</p>
                          
                           </div>
+                          
+                          
                           </div>
                       </li>
                      
                     ))}
                   </ul>
+              
+                </div>
+              )}
+            
+
+              {/* Render episodes of the selected season */}
+              {(selectedSeasonIndex !== null || selectedSeasonIndex !== undefined) && selectedShow.seasons[selectedSeasonIndex as number]?.episodes && (
+                <div className="seasons__information">
+                  <div className="seasons__title">
+                  <h3>Season: {selectedShow.seasons[selectedSeasonIndex as number].season} | <span>{selectedShow.seasons[selectedSeasonIndex as number].title}</span></h3>
+                  <h3>Episodes: {selectedShow.seasons[selectedSeasonIndex as number].episodes.length}</h3>
+                  </div>
+                  
+                  <ul className="seasons__episodes">
+                    {selectedShow.seasons[selectedSeasonIndex as number].episodes.map((episode, index) => (
+                       <li key={index}  className="episodes">
+                       
+                       <div  
+                       
+                       onClick={() =>{ handlePlayButtonClick(episode.file)
+                                            setIsPlaying(true)
+                                            setIsAudioPlaying(true)
+                             }
+                             }>
+                           <p className="episode__number">
+                             Episode {episode.episode}: 
+                           </p>
+                         
+                        
+                         <div className="episode__details">
+                           <p>{episode.title}</p>
+                           <p className="episode__description">Description: {episode.description}</p>
+                        
+                         </div>
+                       
+                      
+                         </div>
+                     </li>
+                    
+                   
+                    ))}
+                  </ul>
+                 
+                </div>
+              )}
                   <button className="dialog__button" onClick={closeDialog}>
                    Close
                   </button>
@@ -373,13 +467,14 @@ return (
              </div>
        )}
 
-           {isAudioPlaying &&(
-            <div className="favoritesmini__audiocontainer">
-            <div className="favoritesmini__audio">
+      {isAudioPlaying && (
+        <div className="mini__audiocontainer">
+        <div className="mini__audio">
+          <img src={selectedShow.image}></img>
           <AudioPlayer
               ref={audioRef}
               autoPlay
-              className="favoritesmini__audioplayer"
+              className="mini__audioplayer"
               src={currentEpisodeUrl}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
@@ -394,6 +489,13 @@ return (
       )}
       </div>
     
+      <div className="backbutton__container">
+      <button 
+      className="back__button"
+      onClick={() =>  window.location.reload()}
+      >Back</button>
+      </div>
+
       <Footer />
   </div>
   );

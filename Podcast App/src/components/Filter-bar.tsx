@@ -35,11 +35,10 @@ type FilterBarProps = {
   onSort: (sortOption: string) => void; 
   onSearch: (query: string) => void;
   allGenres: Array<string>;
-  setFilteredShows: SetStateFunction<AllShowData>
   handleGenreFilter: (genre: string) => void;
 };
 
-export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, onSort, allGenres, setFilteredShows, handleGenreFilter }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, onSort, allGenres, handleGenreFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortShows, setSortShows] = useState<string>('');
   const [genre, setGenre] = useState<string>('')
@@ -55,19 +54,17 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
     console.log(filteredShows)
   };
 
-  // Updates the handleSort function to use the onSort prop
+
   const handleSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const sortOption = event.target.value;
-    setSortShows(sortOption); // Puts the selected option in a state value.
-
-    // Calls the onSort prop with the selected  option.
-    onSort(sortOption);
+    setSortShows(sortOption);
+    onSort(sortOption); // Pass the selected option to the onSort(prop) function.
   };
 
   const handleSortGenre = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const genre = event.target.value;
-    setGenre(genre); // Use setGenre to set the selected genre in the state.
-    handleGenreFilter(genre); // Pass the selected genre to the handleGenreFilter function.
+    setGenre(genre); 
+    handleGenreFilter(genre); // Pass the selected genre to the handleGenreFilter(prop) function.
   };
   return (
     <div>

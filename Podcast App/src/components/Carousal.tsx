@@ -53,7 +53,6 @@ type CarouselProps = {
       <div className="carousal__container">
       <Slider {...settings}>
         {data.map((show) => {
-          const updatedDate = new Date(show.updated);
 
           return (
             

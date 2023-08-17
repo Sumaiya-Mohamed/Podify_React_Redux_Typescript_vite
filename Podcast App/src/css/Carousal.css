@@ -178,13 +178,13 @@
   .carousal__heading{
     margin-top: 40px;
     text-align: center;
-    margin-right: 95px;
+    margin-right: 10px;
     font-size: 22px;
     font-family:'Times New Roman', Times, serif;
     font-style: oblique;
     font-weight: lighter;
     color: whitesmoke;
-    margin-left: 100px;
+    margin-left: 60px;
   }
 }
 

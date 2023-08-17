@@ -1,6 +1,5 @@
 import { favoriteEpisodeSlice } from './favoriteEpisodesSlice'
 import { favoriteShowSlice } from './favoriteShowSlice';
-import { authSlice } from '../store/authSlice';
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
@@ -10,7 +9,6 @@ export const store = configureStore({
     reducer: {
       favoriteEpisode: favoriteEpisodeSlice.reducer,
       favoriteShow: favoriteShowSlice.reducer,
-      auth: authSlice.reducer,
     },
   });
 
