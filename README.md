@@ -2,14 +2,14 @@
 Sumaiya Mohamed
 
 ## Title:
-Podify_React_Redux_Typescript_vite
+Podify
 
 ## Technologies used:
 * Html
 * CSS
+* Typescript
 * React 
 * Redux
-* Typescript
 * Vite
 * Material ui
 * MetaTag.io
