@@ -32,13 +32,13 @@ Podify allows users to filter shows effortlessly by title, a-z, z-a, least recen
 1. **Viewing Seasons and Episodes**:
 Podify allows users to delve into the selected shows seasons and all episodes of the selected seasons.Users can pick which season they would like to listen to and all the episodes for that season will be displayed.
 
-1.**Listening to any Episode**:
+1. **Listening to any Episode**:
 Users can listen to any episode and can also fast forward, rewind and pause the audio as well as increase or decrease the volume for the audio.
 
 1. **Mini Audio Player**:
 Users can listen to an episode while browsing around for other shows they might like.
 
 1. **Favorites Section**:
-Users can mark any show as  favorite and can find it again in the favorites section(favorites page).
+Users can mark any show as favorite and can find it again in the favorites section(favorites page).
 
 
