@@ -28,7 +28,6 @@ type Episodes = {
   file: string;
 };
 
-type SetStateFunction<T> = React.Dispatch<React.SetStateAction<T>>;
 
 type FilterBarProps = {
   filteredShows: AllShowData;

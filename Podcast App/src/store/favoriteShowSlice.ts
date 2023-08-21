@@ -1,10 +1,9 @@
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+
 
 
 type FavoriteShowData = Array<FavoriteShow>;
 
-type FavoriteEpisodeData = Array<Episodes>;
 
 type Episodes = {
   title: string,
@@ -36,7 +35,7 @@ type FavoriteShow = {
   };
 
 
-// Define the initial state for favorites
+// Defined the initial state for show favorites.
 const initialFavoritesState: FavoriteShowData = [];
                           
 

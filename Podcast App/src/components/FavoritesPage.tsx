@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store/store';
 import { FilterBar } from './FavoritesFilterBar';
 import { Footer } from './Footer';
-import { addToEpisodeFavorites, clearEpisodeFavorites } from '../store/favoriteEpisodesSlice';
 import { addToShowFavorites, removeFromShowFavorites, clearShowFavorites } from '../store/favoriteShowSlice';
 import AudioPlayer from 'react-h5-audio-player';
 import CloseIcon from '@mui/icons-material/Close';
@@ -87,22 +86,18 @@ type Episodes = {
 
 
 export const FavoritesPage: React.FC = () => {
-  const favoriteEpisode = useSelector((state: RootState) => state.favoriteEpisode);
   const favoriteShow = useSelector((state:RootState) => state.favoriteShow)
-  const dispatch = useAppDispatch(); // Use the useDispatch hook
-  const [dialogOpen, setDialogOpen] = useState<boolean> (false);   // A boolean value to toggle the dialog between open and close.
+  const dispatch = useAppDispatch(); 
+  const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
   const [selectedShow, setSelectedShow] = useState<FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
-  const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows information.
+  const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows season information.
   const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false); // This will be used to pause and play the audio.
   const [allFavoriteShows, setAllFavoriteShows] = useState<FavoriteShowData>([])
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [savedEpisodes, setSavedEpisodes] = useState<FavoriteEpisodeData>()
-  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
-  const [renderedShows, setRenderedShows] = useState([]);
-  const [genreOption, setGenreOption] = useState<string>('')
-  const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
+  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows episodes information.
+  const [genreOption, setGenreOption] = useState<string>('');
  
   
   
@@ -120,7 +115,6 @@ export const FavoritesPage: React.FC = () => {
     if (favoriteShowsFromLocalStorage) {
       const parsedFavorites: FavoriteShowData = JSON.parse(favoriteShowsFromLocalStorage);
       setAllFavoriteShows(parsedFavorites);
-      // Step 3: Dispatch the favorites to the Redux store
       dispatch(clearShowFavorites());
       parsedFavorites.forEach((show) => {
         dispatch(addToShowFavorites(show));
@@ -134,12 +128,11 @@ export const FavoritesPage: React.FC = () => {
       show.title.toLowerCase().includes(query.toLowerCase())
     );
 
-    // If the search query is empty, reset filteredShows to an empty array
     dispatch(clearShowFavorites());
     filteredShows.forEach((show) => {
       dispatch(addToShowFavorites(show))
     })
-    //setFavorites(query.trim() === '' ? [] : filteredShows);
+   
   };
 
   const handleSort = (option: string) => {
@@ -174,30 +167,27 @@ export const FavoritesPage: React.FC = () => {
   
  
  
-  // Function to handle play button click
+  
   const handlePlayButtonClick = (episodeUrl: string) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
     console.log(currentEpisodeUrl)
 
-     // Reset audio progress and start playing
+     // Reset audio progress and start playing the audio from the beginning.
      if (audioRef.current) {
-      audioRef.current.audio.current.currentTime = 0; // Reset progress to the beginning
-      audioRef.current.audio.current.play(); // Start playing
+      audioRef.current.audio.current.currentTime = 0; 
+      audioRef.current.audio.current.play(); 
     }
   };
  
   const shows = favoriteShow
  
-  // Function to handle mini audio close.
+ 
 const handleMiniAudioClose = () => {
   setIsAudioPlaying(false);
   setCurrentEpisodeUrl(null)
 };
 
-const handleReset = () => {
-  dispatch(clearEpisodeFavorites())
-}
 
 const findShowById = (showId: string) => {
   const foundShow = favoriteShow.find((show) => show.id === showId);

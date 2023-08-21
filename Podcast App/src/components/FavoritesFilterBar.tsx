@@ -44,7 +44,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
     onSearch(searchQuery);
   };
 
-  // Updates the handleSort function to use the onSort prop
+
   const handleSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const sortOption = event.target.value;
     setSortShows(sortOption); // Puts the selected option in a state value.

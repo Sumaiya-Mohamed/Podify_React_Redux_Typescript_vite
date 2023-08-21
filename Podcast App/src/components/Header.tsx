@@ -1,6 +1,5 @@
 
 import { Link } from 'react-router-dom';
-//import { Switch }  from "@mui/material"
 
 
 export const Header = () => {

@@ -7,15 +7,14 @@ import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlin
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { addToEpisodeFavorites, removeFromEpisodeFavorites} from '../store/favoriteEpisodesSlice';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
-import { v4 as uuidv4 } from 'uuid';
+
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
 type FavoriteShowData = Array<FavoriteShow>;
-type FavoriteEpisodeData = Array<Episodes>;
+
 
 
 type ShowPreview = {
@@ -42,7 +41,6 @@ type Show = {
 
 type PodcastPreviewProps = {
   data: ShowOriginalData
-  showIds: Array<string>
 };
 
 type Seasons = Array<Season>
@@ -86,16 +84,16 @@ type FavoriteShow = {
 
 
 
-export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) => {
+export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
-  const [dialogOpen, setDialogOpen] = useState<boolean> (false);   // A boolean value to toggle the dialog between open and close.
+  const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
   const [selectedShow, setSelectedShow] = useState<ShowPreview | FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows information.
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
   const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState<boolean>(false); // This will be used to pause and play the audio.
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [filteredShows, setFilteredShows] = useState<AllShowData>([]);
   const [sortOption, setSortOption] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState(false);
@@ -106,9 +104,8 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   const [genreOption, setGenreOption] = useState<string>('')
  
 
-  const favoriteEpisode = useSelector((state: RootState) => state.favoriteEpisode);
   const favoriteShow = useSelector((state: RootState) => state.favoriteShow);
-  const dispatch = useDispatch<AppDispatch>(); //This will be used to update the favorites state array.
+  const dispatch = useDispatch<AppDispatch>();
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -183,7 +180,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
       document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
       setCurrentEpisodeUrl(selectedSeasons[selectedSeasonIndex].episodes[selectedEpisodeIndex].file)
     } else {
-      // If the user clicked "Cancel", pause the audio if available
+      // If the user clicked "Cancel", pause the audio if available.
       setIsAudioPlaying(false)
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); 
@@ -195,20 +192,20 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data, showIds}) =
   setCurrentEpisodeUrl(null) 
   };
  
-  // Function to handle play button click
+
   const handlePlayButtonClick = (episodeUrl: string) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
     setShowAudioSettings(true)
 
-     // Reset audio progress and to start playing audio from the start as there is only one audio file.
+     // Reset audio progress and to start playing audio from the start.
      if (audioRef.current) {
-      audioRef.current.audio.current.currentTime = 0; // Reset progress to the beginning
-      audioRef.current.audio.current.play(); // Start playing
+      audioRef.current.audio.current.currentTime = 0;
+      audioRef.current.audio.current.play();
     }
   };
 
- // Add a new function to handle the season selection from the dropdown
+
  const handleSeasonSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
   const seasonIndex = parseInt(event.target.value);
   setSelectedSeasonIndex(seasonIndex);
@@ -228,7 +225,7 @@ const handleSort = (sortOption: string) => {
 
 
   if (sortOption !== '') {
-    const sortedShows = filteredShows.slice(); // Create a copy of the filtered shows to avoid directly modifying the state
+    const sortedShows = filteredShows.slice(); // Create a copy of the filtered shows to avoid directly modifying the state.
     sortedShows.sort((a, b) => {
       if (sortOption === 'a-z') {
         return a.title.localeCompare(b.title);
@@ -276,10 +273,8 @@ const updateFavoritesInLocalStorage = (favorites: FavoriteShowData) => {
 const handleAddToFavorites = () => {
   if (!selectedShow) return;
 
-  // Toggle the isFavorite state for the selected show
   setIsFavorite((prevIsFavorite) => !prevIsFavorite);
 
-  // Dispatch the appropriate action to add or remove the selected show from favorites
   if (!isFavorite) {
     dispatch(addToShowFavorites(selectedShow));
   } else {
@@ -289,7 +284,7 @@ const handleAddToFavorites = () => {
   updateFavoritesInLocalStorage(favoriteShow);
 };
 
-// Function to handle mini audio close.
+
 const handleMiniAudioClose = () => {
   setIsAudioPlaying(false);
   setCurrentEpisodeUrl(null);
@@ -301,7 +296,7 @@ const handleMiniAudioClose = () => {
       <FilterBar
        onSearch={handleSearch}
        filteredShows={filteredShows}
-       onSort={handleSort} // Pass the handleSort function as a prop to FilterBar
+       onSort={handleSort}
        allGenres={allGenres}
        handleGenreFilter= {handleGenreFilter}
       />
@@ -484,7 +479,7 @@ const handleMiniAudioClose = () => {
           </dialog>
         </div>
       )}
-      {isAudioPlaying && (
+       {isAudioPlaying && (
         <div className="mini__audiocontainer">
         <div className="mini__audio">
           <img src={selectedShow.image}></img>

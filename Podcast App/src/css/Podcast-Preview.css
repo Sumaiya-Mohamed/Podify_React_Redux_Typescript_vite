@@ -240,10 +240,8 @@
  .episodes{
   border-top-style: solid ;
   border-width: 1.8px;
-  text-align: left;
-  width: 100%;
   position: relative;
-  display: flex;
+
  }
 
  .seasons__title{
@@ -253,38 +251,23 @@
  }
 
 .episode__information{
-  display: flex;
-  width: 100%;
+  
 }
 
  .episode__number{
   font-weight: bold;
   font-size: 13px;
-  width: 27%;
-  margin-left: 0;
-  padding-left: 0;
-  margin-right: 0;
  }
 
  .episode__details{
-  width: 60%;
-  height:fit-content;
-  text-overflow: ellipsis;
+
  }
 
  .episode__description{
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: pre-wrap;
   font-size: 12px;
  }
 
- .play__button > img{
-  position:absolute;
-  width: 40px;
-  top: 25%;
-  left: 90%;
-  object-fit: contain;
+ .play__button {
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
  }

@@ -6,10 +6,6 @@ import { Footer } from './components/Footer'
 import {CircularProgress } from '@mui/material';
 
 
-
-
- 
-type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
 
 type ShowPreview = {
@@ -51,7 +47,7 @@ type Episodes = [
 
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Added a state variable to track loading status
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
 
@@ -67,7 +63,7 @@ export const App: React.FC = () => {
         const json = await response.json() as ShowOriginalData;
         setPodcastData(json)
 
-         // Set isLoading to false after data fetching is complete
+         // Set isLoading to false after data fetching is complete.
          setIsLoading(false);
       }
       catch (error) {
@@ -78,7 +74,6 @@ export const App: React.FC = () => {
     
     void fetchData();
 
-    // I did not include a clean up function because this data will be used through out my app.
   }, []);
 
     const showId = podcastData.flatMap((show) =>{
@@ -104,9 +99,6 @@ export const App: React.FC = () => {
         <br></br>
         <PodcastPreview
          data= {podcastData}
-         showIds={showId}
-        // favorites={favorites}
-        // setFavorites={setFavorites}
         />
         <Footer/>
         
