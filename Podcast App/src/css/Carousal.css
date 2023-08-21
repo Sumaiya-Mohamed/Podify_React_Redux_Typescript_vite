@@ -7,6 +7,7 @@
     border-style: outset;
     border-width: 2px;
     width: 85%;
+    height: 310px;
     margin-right: 0;
     margin-left: 25px;
     padding-top: 30px;
@@ -19,7 +20,7 @@
     position: absolute;
     top: 42%;
     left: 100%;
-    margin-left: 1px;
+    margin-left: 5px;
     transform: translateY(-50%);
     background-color: transparent;
     color: white;
@@ -44,11 +45,11 @@
     z-index: 1;
   }
   .carousal__img {
-    width: 65%;
-    height: 120px;
+    width: 94%;
+    height: 200px;
     object-fit:fill;
     z-index: 0;
-    margin-left: 15px;
+    margin-left: 5px;
    
   }
   .carousal__title{
@@ -69,7 +70,7 @@
     border-radius: 5px ;
     font-size: 7px;
     opacity: 0.6;
-    margin-left: 30px;
+    margin-left: 40px;
   }
 
   .carousal__slide {
@@ -98,8 +99,9 @@
     justify-content: center;
     border-style: outset;
     border-width: 2px;
-    width: 55%;
-    margin-left: 185px;
+    width: 80%;
+    height: 450px;
+    margin-left: 100px;
     margin-right: 130px;
     padding-top: 30px;
     padding-left: 0;
@@ -113,7 +115,7 @@
     position: absolute;
     top: 42%;
     left: 100%;
-    margin-left: 1px;
+    margin-left: 5px;
     transform: translateY(-50%);
     background-color: transparent;
     color: white;
@@ -136,18 +138,19 @@
     outline: none;
     cursor: pointer;
     z-index: 1;
+    margin-right: 5px;
   }
   .carousal__img {
-    width: 75%;
-    height: 180px;
+    width: 97%;
+    height: 320px;
     object-fit:fill;
     z-index: 0;
-    margin-left: 15px;
+    margin-left: 6px;
    
   }
   .carousal__title{
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 10px;
+    font-size: 15px;
     padding-left:7px;
     padding-right: 7px;
     color: whitesmoke;
@@ -161,9 +164,9 @@
     background-color: rgb(255, 248, 248);
     width: 40%;
     border-radius: 5px ;
-    font-size: 7px;
+    font-size: 10px;
     opacity: 0.6;
-    margin-left: 38px;
+    margin-left: 68px;
   }
 
   .carousal__slide {
@@ -196,6 +199,7 @@
   border-style: outset;
   border-width: 2px;
   width: 85%;
+  height: 480px;
   margin-left: 95px;
   padding-top: 30px;
   padding-left: 0;

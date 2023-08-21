@@ -99,7 +99,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [episode,setEpisode] = useState<Episodes>()
   const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
   const [genreOption, setGenreOption] = useState<string>('')
  
@@ -344,8 +343,8 @@ const handleMiniAudioClose = () => {
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
             <button className="favorite__button" onClick={() => handleAddToFavorites()}>
-                           {favoriteMap[selectedShow.id] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-                           </button>
+                  {favoriteMap[selectedShow.id] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+            </button>
               {currentEpisodeUrl && showAudioSettings &&(
           <div>
             <AudioPlayer
@@ -411,14 +410,14 @@ const handleMiniAudioClose = () => {
                                              setIsPlaying(true)
                               }
                               }>
-                            <p className="episode__number">
+                            <p>
                               Episode {episode.episode}: 
                             </p>
                           
                          
-                          <div className="episode__details">
+                          <div>
                             <p>{episode.title}</p>
-                            <p className="episode__description">Description: {episode.description}</p>
+                            <p>Description: {episode.description}</p>
                          
                           </div>
                           
@@ -445,19 +444,19 @@ const handleMiniAudioClose = () => {
                        <li key={index}  className="episodes">
                        
                        <div  
-                       
-                       onClick={() =>{ handlePlayButtonClick(episode.file)
+                        className="play__button"
+                        onClick={() =>{ handlePlayButtonClick(episode.file)
                                             setIsPlaying(true)
                              }
-                             }>
-                           <p className="episode__number">
+                        }>
+                           <p>
                              Episode {episode.episode}: 
                            </p>
                          
                         
-                         <div className="episode__details">
+                         <div>
                            <p>{episode.title}</p>
-                           <p className="episode__description">Description: {episode.description}</p>
+                           <p>Description: {episode.description}</p>
                         
                          </div>
                        

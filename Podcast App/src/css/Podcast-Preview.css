@@ -14,17 +14,18 @@
  }
  
  .preview__information{
-    width: 73%;
+    width: 60%;
     font-size: 13px;
     padding-left: 10px;
     padding-right: 10px;
     background-color: rgba(0, 0, 0, 0.3);
-    height: 360px;
+    height: 330px;
     color: rgb(150, 150, 150);
     border-radius: 10px;
     border-style: none ;
     text-align: left;
     cursor: pointer;
+    margin-left: 25px;
  }
 
  .preview__information-large{
@@ -250,19 +251,13 @@
   font-size: 15px;
  }
 
-.episode__information{
-  
-}
 
  .episode__number{
   font-weight: bold;
   font-size: 13px;
  }
 
- .episode__details{
-
- }
-
+ 
  .episode__description{
   font-size: 12px;
  }
@@ -272,9 +267,9 @@
   transition: transform 0.2s ease-in-out;
  }
  
-.play__button:active {
-  transform: scale(0.1);
-}
+ .play__button:hover{
+  transform: translateX(1%);
+ }
 
 .blurred__background{
   padding-left: 0;
@@ -304,7 +299,49 @@
   margin-left: 0;
 }
 
+.mini__audiocontainer{
+  position: fixed;
+  left: 5%;
+  top: 0;
+  width: 65%;
+}
 
+.mini__audio{
+  width: 70%;
+  border-radius: 10px;
+  border-style: none ;
+  position:relative;
+
+}
+
+.mini__audio > img{
+  width: 100%;
+  z-index: 0;
+  border-style: none;
+  border-radius: 10px;
+}
+
+.mini__audioplayer{
+  width: 100%;
+  height: 75px;
+  z-index: 1;
+  position: absolute;
+  top: 210px;
+  border-style: none;
+  border-radius: 10px;
+}
+
+.mini__cancel{
+  width: 20%;
+  z-index: 1;
+  position: absolute;
+  top: 2%;
+  left: 79%;
+  mix-blend-mode:color-burn;
+  border-style: none;
+  background-color: none;
+  cursor: pointer;
+}
 
 .back__button{
   margin-top: 30px;
@@ -324,13 +361,13 @@
 }
 
 .loading{
-  margin-top: 170px;
-  margin-left: 650px;
+  margin-top: 150px;
+  margin-left: 220px;
 }
 
 .loading__open{
   margin-top: 300px;
-  margin-left: 650px;
+  margin-left: 220px;
 }
 
 }
@@ -338,13 +375,13 @@
 @media (min-width: 700px) {
   .preview__container{
     display: grid;
-    width: 98%;
+    width: 88%;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 20px;
     grid-row-gap: 35px; 
     padding-left: 40px;
     margin-top: 45px;
-    margin-left: 25px;
+    margin-left: 59px;
     margin-right: 0;
     justify-items: center;
     overflow: hidden;
@@ -625,9 +662,9 @@
   transition: transform 0.2s ease-in-out;
  }
  
-.play__button:active {
-  transform: scale(0.1);
-}
+ .play__button:hover{
+  transform: translateX(1%);
+ }
 
 .blurred__background{
   padding-left: 0;
@@ -672,18 +709,65 @@
   cursor: pointer;
 }
 
+
+
 .loading__container{
-  height: 400px;
+  height: 500px;
 }
 
 .loading{
   margin-top: 170px;
-  margin-left: 650px;
+  margin-left: 400px;
 }
 
 .loading__open{
   margin-top: 300px;
-  margin-left: 650px;
+  margin-left: 400px;
+}
+
+
+.mini__audiocontainer{
+  position: fixed;
+  left: 5%;
+  top: 0;
+  width: 30%;
+}
+
+.mini__audio{
+  width: 100%;
+  border-radius: 10px;
+  border-style: none ;
+  position:relative;
+
+}
+
+.mini__audio > img{
+  width: 100%;
+  z-index: 0;
+  border-style: none;
+  border-radius: 10px;
+}
+
+.mini__audioplayer{
+  width: 100%;
+  height: 75px;
+  z-index: 1;
+  position: absolute;
+  top: 210px;
+  border-style: none;
+  border-radius: 10px;
+}
+
+.mini__cancel{
+  width: 20%;
+  z-index: 1;
+  position: absolute;
+  top: 2%;
+  left: 79%;
+  mix-blend-mode:color-burn;
+  border-style: none;
+  background-color: none;
+  cursor: pointer;
 }
 
 }
@@ -983,7 +1067,7 @@
  }
 
  .play__button:hover{
-  transform: translateX(3%);
+  transform: translateX(1%);
  }
  
 
@@ -1044,11 +1128,10 @@
   margin-left: 650px;
 }
 
-}
 
 .mini__audiocontainer{
   position: fixed;
-  left: 75%;
+  left: 5%;
   top: 0;
   width: 30%;
 }
@@ -1089,3 +1172,5 @@
   background-color: none;
   cursor: pointer;
 }
+}
+

@@ -17,7 +17,7 @@
   }
   
   .filter__select {
-    width: 49%;
+    width: 65%;
     height: 20px;
     background-color: rgba(255, 248, 248, 0.767);
     font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -86,7 +86,7 @@
   }
   
   .genre__select{
-    width: 39%;
+    width: 45%;
     height: 26px;
     background-color: rgba(255, 248, 248, 0.767);
     font-family: 'Comic Sans MS', cursive, sans-serif;

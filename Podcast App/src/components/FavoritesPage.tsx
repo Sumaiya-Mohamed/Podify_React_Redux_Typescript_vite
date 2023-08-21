@@ -388,14 +388,14 @@ return (
                                              setIsPlaying(true)
                               }
                               }>
-                            <p className="episode__number">
+                            <p>
                               Episode {episode.episode}: 
                             </p>
                           
                          
-                          <div className="episode__details">
+                          <div>
                             <p>{episode.title}</p>
-                            <p className="episode__description">Description: {episode.description}</p>
+                            <p>Description: {episode.description}</p>
                          
                           </div>
                           
@@ -429,14 +429,14 @@ return (
                                             setIsAudioPlaying(true)
                              }
                              }>
-                           <p className="episode__number">
+                           <p>
                              Episode {episode.episode}: 
                            </p>
                          
                         
-                         <div className="episode__details">
+                         <div>
                            <p>{episode.title}</p>
-                           <p className="episode__description">Description: {episode.description}</p>
+                           <p>Description: {episode.description}</p>
                         
                          </div>
                        
