@@ -41,4 +41,9 @@ Users can listen to an episode while browsing around for other shows they might 
 1. **Favorites Section**:
 Users can mark any show as favorite and can find it again in the favorites section(favorites page).
 
-
+## How to use:
+1. Download the file.
+1. Extract the file.
+1. Open in vscode.
+1. Run npm install in the terminal.
+1. Lastly, run "npm run dev" and click on the link.
