@@ -41,6 +41,9 @@ Users can listen to an episode while browsing around for other shows they might 
 1. **Favorites Section**:
 Users can mark any show as favorite and can find it again in the favorites section(favorites page).
 
+## Requirments:
+* Node.js
+
 ## How to use:
 1. Download the file.
 1. Extract the file.
