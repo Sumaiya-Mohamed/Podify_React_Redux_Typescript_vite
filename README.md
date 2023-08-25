@@ -27,21 +27,21 @@ Podify offers a detailed description of all podcast shows by displaying each sho
 Podify offers a fully working carousal to give users a sample of the podcast shows and to recommend shows that the user  might like.
 
 1. **Smart Show Filtering**:
-Podify allows users to filter shows effortlessly by title, a-z, z-a, least recent, most recent and by genre.Wether the user is searching for a specific show or exploring the different shows provided, the app quickly narrows down the results to match their criteria.
+Podify allows users to filter shows effortlessly by title, a-z, z-a, least recent, most recent and by genre.Whether the user is searching for a specific show or exploring the different shows provided, the app quickly narrows down the results to match their criteria.
 
 1. **Viewing Seasons and Episodes**:
-Podify allows users to delve into the selected shows seasons and all episodes of the selected seasons.Users can pick which season they would like to listen to and all the episodes for that season will be displayed.
+Podify allows users to delve into the selected shows seasons and all episodes of the selected seasons. Users can pick which season they would like to listen to and all the episodes for that season will be displayed.
 
 1. **Listening to any Episode**:
-Users can listen to any episode and can also fast forward, rewind and pause the audio as well as increase or decrease the volume for the audio.
+Users can listen to any episode and can also fast forward, rewind, and pause the audio as well as increase or decrease the volume for the audio.
 
 1. **Mini Audio Player**:
 Users can listen to an episode while browsing around for other shows they might like.
 
 1. **Favorites Section**:
-Users can mark any show as favorite and can find it again in the favorites section(favorites page).
+Users can mark any show as a favorite and can find it again in the favorites section(favorites page).
 
-## Requirments:
+## Requirements:
 * Node.js
 
 ## How to use:
