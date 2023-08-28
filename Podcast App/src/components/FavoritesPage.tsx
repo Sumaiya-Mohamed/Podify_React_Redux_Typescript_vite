@@ -169,9 +169,9 @@ export const FavoritesPage: React.FC = () => {
  
   
   const handlePlayButtonClick = (episodeUrl: string) => {
+    setCurrentEpisodeUrl(null)
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
-    console.log(currentEpisodeUrl)
 
      // Reset audio progress and start playing the audio from the beginning.
      if (audioRef.current) {
@@ -179,8 +179,6 @@ export const FavoritesPage: React.FC = () => {
       audioRef.current.audio.current.play(); 
     }
   };
- 
-  const shows = favoriteShow
  
  
 const handleMiniAudioClose = () => {
@@ -205,6 +203,10 @@ const findShowById = (showId: string) => {
       setSelectedSeasons(activeShowsSeasons);
       setSelectedSeasonIndex(undefined); // Reset the selected season index when a new show is opened.
     }
+
+    if (audioRef.current) {
+      audioRef.current.audio.current.currentTime = 0; 
+    }
    
     document.body.classList.add('modal-open');
     setDialogOpen((prevDialogOpen) => !prevDialogOpen);
@@ -218,9 +220,8 @@ const findShowById = (showId: string) => {
       setIsAudioPlaying(true);
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
-      setCurrentEpisodeUrl(selectedSeasons[selectedSeasonIndex].episodes[selectedEpisodeIndex].file)
     } else {
-      // If the user clicked "Cancel", pause the audio if available
+      // If the user clicked "Cancel", pause the audio if available.
       setIsAudioPlaying(false)
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); 
@@ -228,9 +229,9 @@ const findShowById = (showId: string) => {
     }
   } 
   setDialogOpen(false)
-  document.body.classList.remove('modal-open'); 
-  setCurrentEpisodeUrl(null)
+  document.body.classList.remove('modal-open');
   };
+ 
 
   const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
 
@@ -247,13 +248,11 @@ const handleGenreFilter = (genre: string) => {
     filteredByGenre.forEach((show) => {
       dispatch(addToShowFavorites(show)); // Dispatch filtered shows.
     });
-    console.log('yay');
   } else {
     dispatch(clearShowFavorites()); // Clear existing favorites.
     favoriteShow.forEach((show) => {
       dispatch(addToShowFavorites(show)); // Dispatch all shows.
     });
-    console.log('nay');
   }
 };
 
@@ -423,10 +422,10 @@ return (
                        <li key={index}  className="episodes">
                        
                        <div  
-                       
+                       className="play__button"
                        onClick={() =>{ handlePlayButtonClick(episode.file)
                                             setIsPlaying(true)
-                                            setIsAudioPlaying(true)
+          
                              }
                              }>
                            <p>

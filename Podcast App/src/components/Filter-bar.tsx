@@ -50,7 +50,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSearch(searchQuery);
-    console.log(filteredShows)
   };
 
 

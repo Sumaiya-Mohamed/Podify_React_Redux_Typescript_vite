@@ -177,7 +177,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
       setIsAudioPlaying(true);
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); // Removes the CSS class to re-enable scrolling on body.
-      setCurrentEpisodeUrl(selectedSeasons[selectedSeasonIndex].episodes[selectedEpisodeIndex].file)
     } else {
       // If the user clicked "Cancel", pause the audio if available.
       setIsAudioPlaying(false)
@@ -188,7 +187,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   } 
   setDialogOpen(false)
   document.body.classList.remove('modal-open');
-  setCurrentEpisodeUrl(null) 
   };
  
 
@@ -196,7 +194,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
     setShowAudioSettings(true)
-
      // Reset audio progress and to start playing audio from the start.
      if (audioRef.current) {
       audioRef.current.audio.current.currentTime = 0;
@@ -216,7 +213,6 @@ const handleSearch = (query: string) => {
   );
   
   setFilteredShows(query.trim() === '' ? [] : filteredShows);
-  console.log(filteredShows);
 };
 
 const handleSort = (sortOption: string) => {
@@ -253,10 +249,8 @@ const handleGenreFilter = (genre: string) => {
       show.genres?.includes(genre) // Use optional chaining here to avoid accessing undefined genres.
     );
     setFilteredShows(filteredByGenre);
-    console.log('yay');
-  } else {
+  } else{
     setFilteredShows(updatedShowData);
-    console.log('nay');
   }
 };
 
@@ -401,7 +395,6 @@ const handleMiniAudioClose = () => {
                   </div>
                   <ul className="seasons__episodes">
                     {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
-                  
                       <li key={index}  className="episodes">
                        
                         <div  
@@ -424,10 +417,13 @@ const handleMiniAudioClose = () => {
                           
                           </div>
                       </li>
-                     
+                    
                     ))}
                   </ul>
-              
+                  
+                  <button className="dialog__button" onClick={ closeDialog}>
+                       Close
+                     </button>
                 </div>
               )}
             
@@ -463,18 +459,20 @@ const handleMiniAudioClose = () => {
                       
                          </div>
                      </li>
-                    
-                   
+                     
                     ))}
                   </ul>
                  
                 </div>
+               
               )}
+               <button className="dialog__button" onClick={ closeDialog}>
+                  Close
+                </button>
+                
             </div>
           
-            <button className="dialog__button" onClick={closeDialog}>
-              Close
-            </button>
+            
           </dialog>
         </div>
       )}
