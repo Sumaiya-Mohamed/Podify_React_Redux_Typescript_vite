@@ -19,6 +19,9 @@ Podify
 ## Description:
 _Podify-React-Redux-Typescript-vite_ is an application that allows users to browse across a wide range of podcasts and mark shows as favorite(all favorites will be displayed on the favorites page).This app also allows users to view all the seasons and episodes of any show and allows the user to listen to any episode in any season.
 
+## Design:
+https://www.figma.com/file/HmfABvGLrE4bNS9ymH3he9/Podify?type=design&node-id=0%3A1&mode=design&t=4CYseBXXDhiU3PSe-1
+
 ## Key Features:
 1. **Comprehensive show Information**:
 Podify offers a detailed description of all podcast shows by displaying each shows: preview image, title, number of seasons, genres and date updated.This way, a user can quickly assess if they are interested in a show before delving into it.
