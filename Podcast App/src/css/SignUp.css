@@ -1,0 +1,73 @@
+.signup__container{
+    display: grid;
+    width: 35%;
+    height: 250px;
+    position: absolute;
+    top: 30%;
+    left: 33%;
+}
+
+.fullname__container{
+    border-radius: 20px;
+    margin: 10px;
+    padding: 3px;
+    height: 50px;
+    background-color:#232323;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;
+    padding-left: 15px;
+}
+
+.email__container{
+    border-radius: 20px;
+    margin: 10px;
+    padding: 3px;
+    height: 50px;
+    background-color:#232323;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;
+    padding-left: 15px;
+}
+
+.password__container{
+    border-radius: 20px;
+    margin: 10px;
+    padding: 3px;
+    height: 50px;
+    background-color:#232323;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;
+    padding-left: 15px;
+}
+
+.submit__container{
+    border-radius: 20px;
+    margin: 10px;
+    width: 20%;
+    justify-self: center;
+    height: 40px;
+    background-color:#232323;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;   
+    margin-left: 250px;  
+}
+
+.login__container{
+    border-radius: 20px;
+    margin: 10px;
+    width: 7%;
+    justify-self: center;
+    height: 41px;
+    background-color:#232323;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;
+    margin-left: 130px;  
+    position: absolute;
+    top: 65%;
+    left: 32%;
+}

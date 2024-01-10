@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
-
+import { allGenres } from '../data';
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
@@ -91,8 +91,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [selectedShow, setSelectedShow] = useState<ShowPreview | FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
   const [selectedSeasonIndex, setSelectedSeasonIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows information.
-  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);
-  const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null);
+  const [currentEpisodeUrl, setCurrentEpisodeUrl] = useState<string | null>(null); //State that keeps track of what audio to play.
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [filteredShows, setFilteredShows] = useState<AllShowData>([]);
   const [sortOption, setSortOption] = useState<string>('');
@@ -147,12 +146,15 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   }, [favoriteShow]);
   
   
+  //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
     return foundShow;
   };
   
-
+  /*This function uses the findShowById function and displays the selected shows 
+   *information.
+   */
   const openDialog = (show: ShowPreview) => {
     const selectedShowData = findShowById(show.id);
      const activeShowsSeasons = selectedShowData?.seasons // The seasons of the active show.
@@ -164,11 +166,14 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
       setSelectedSeasonIndex(undefined); // Reset the selected season index when a new show is opened.
     }
    
-    document.body.classList.add('modal-open');
+    document.body.classList.add('modal-open');//This makes the browser focus only on the dialog that displays the season and episode information.
     setDialogOpen((prevDialogOpen) => !prevDialogOpen);
   };
 
 
+   /*This function handles the closing of the dialog and also shows a prompt asking
+   * if the user wants to continue listening to the selected audio if they close the dialog.
+   */
   const closeDialog = () => {
     if(isPlaying){
     const shouldClose = window.confirm('Would you like to continue listening?');
@@ -182,14 +187,15 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
       setIsAudioPlaying(false)
       setDialogOpen(false)
       document.body.classList.remove('modal-open'); 
-      
-    }
+       }
   } 
   setDialogOpen(false)
   document.body.classList.remove('modal-open');
   };
  
-
+  /*This function handles changing the episode url and saving it in the currentEpisodeUrl state 
+   *so that selected episodes audio plays.
+  */
   const handlePlayButtonClick = (episodeUrl: string) => {
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
@@ -202,6 +208,9 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   };
 
 
+  /*This function takes the number of the selected season and stores it in the 
+   * selectedSeasonIndex state to keep track of what season information should be active.
+   */
  const handleSeasonSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
   const seasonIndex = parseInt(event.target.value);
   setSelectedSeasonIndex(seasonIndex);
@@ -237,13 +246,9 @@ const handleSort = (sortOption: string) => {
   }
 };
 
-const allGenres = [  "True Crime and Investigative Journalism",  "Comedy",  "News",  "Business",  "Technology",  "Education",  "History",  "Health",  "Science",  "Politics",  "Sports",  "Entertainment",  "Music",  "Food",  "Travel",  "Storytelling",  "Interviews",  "Fiction",  "Self-Improvement",  "Spirituality",  "Documentary",  "Parenting",  "Gaming",  "Art",  "Society & Culture",  "Hobbies",  "Fitness",  "Fashion",  "Personal  Growth",  "Philosophy",  "Relationships",  "Languages",  "Technology",  "Books",  "Psychology",  "True Stories",  "Horror",  "Design",  "Film",  "Environment",  "Marketing",  "Motivation",  "Investing",  "Astrology",  "Career",  "Home Improvement",  "Mental Health",  "Nature",  "Photography",  "Poetry",  "Science Fiction",  "Sustainability",  "Theater",  "Travel",  "Videogames",  "Wellness",  "Writing", "Featured"]
-
-
 
 const handleGenreFilter = (genre: string) => {
   setGenreOption(genre);
-  
   if (genre) {
     const filteredByGenre = updatedShowData.filter((show) =>
       show.genres?.includes(genre) // Use optional chaining here to avoid accessing undefined genres.

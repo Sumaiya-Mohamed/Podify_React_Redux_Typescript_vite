@@ -11,6 +11,11 @@ export const Header = () => {
               <h1 className="podcast__name">Podify</h1>
             </div>
             <div className="right__elements">
+            <Link to="./SignIn">
+             <button className="SignIn__button">
+               Sign In
+             </button>
+            </Link>
             <Link to="./components/FavoritesPage">
              <button 
              className="favorites__button"

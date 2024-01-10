@@ -1,28 +1,8 @@
 import React, { useState} from "react";
 
 
-type SelectedShow = {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  seasons: Array<{
-    season: number;
-    title: string;
-    image: string;
-    episodes: Array<{
-      title: string;
-      description: string;
-      episode: number;
-      file: string;
-    }>;
-  }>;
-  genres: Array<string>;
-  updated: Date;
-};
 
 type FilterBarProps = {
- // favorites: FavoriteShowData;
   onSort: (sortOption: string) => void; 
   onSearch: (query: string) => void;
   allGenres: Array<string>;
