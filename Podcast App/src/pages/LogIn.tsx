@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { supabase } from '../Client';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { setToken } from '../store/tokenSlice';
 
-export const LogIn = ({setToken}) => {
+
+export const LogIn = () => {
   let navigate = useNavigate()
+  const token = useSelector((state: RootState) => state.token);
+  const dispatch = useDispatch();
 
   const [formData,setFormData] = useState({
         email:'',password:''
@@ -32,7 +38,8 @@ export const LogIn = ({setToken}) => {
           })
 
       if (error) throw error
-      setToken(data)
+      dispatch(setToken(data))
+      console.log(data)
       navigate('/')
 
       
@@ -41,7 +48,16 @@ export const LogIn = ({setToken}) => {
     }
   }
 
+ if(token){
+  sessionStorage.setItem('token', JSON.stringify(token))
+ }
 
+ useEffect(() => {
+ if(sessionStorage.getItem('token')){
+  let newData = JSON.parse(sessionStorage.getItem('token'))
+  dispatch(setToken(newData))
+ }
+ }, [])
 
 
   return (
@@ -68,7 +84,7 @@ export const LogIn = ({setToken}) => {
 
 
       </form>
-      Don't have an account? <Link to='/signup'>Sign Up</Link> 
+      Don't have an account? <Link to='/SignUp'>Sign Up</Link> 
     </div>
   )
 }

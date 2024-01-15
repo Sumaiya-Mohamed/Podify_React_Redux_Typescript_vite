@@ -4,6 +4,10 @@ import { Carousal } from './components/Carousal'
 import { PodcastPreview } from './components/Podcast-Preview'
 import { Footer } from './components/Footer'
 import {CircularProgress } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { IdSlice, resetId } from './store/IdSlice';
+import { RootState } from './store/store';
+
 
 
 type ShowOriginalData = Array<Show>
@@ -48,8 +52,23 @@ type Episodes = [
 export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  
+  const dispatch = useDispatch();
+  const id = useSelector((state: RootState) => state.id)
 
+  useEffect(() => {
+    function handleUnload(){
+      dispatch(resetId());
+    }
 
+    //Attach the event listener to call the handleUnload function when a user leaves the app.
+    window.addEventListener('beforeunload', handleUnload)
+        //Remove the event listener when the component is unmounted.
+    return () => {
+      window.removeEventListener('beforeunload', handleUnload);
+      
+    };
+  }, [dispatch])
 
   useEffect(() => {
     

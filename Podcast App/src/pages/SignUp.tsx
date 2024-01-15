@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate} from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux'; 
 import { supabase } from '../Client'
+import { IdSlice, setId } from '../store/IdSlice';
+import { RootState } from '../store/store';
 
 
 export const SignUp = () => {
+
+  const id = useSelector((state:RootState) => state.id)
+  const dispatch = useDispatch();
 
   const [formData,setFormData] = useState({
     fullName:'',
@@ -40,13 +46,14 @@ export const SignUp = () => {
         }
       )
       if (error) throw error
+      dispatch(setId(data.user.id))
       navigate("/")
       alert('Check your email for verification link')
-
       
     } catch (error) {
       alert(error)
     }
+
   }
 
 
@@ -79,7 +86,8 @@ export const SignUp = () => {
         />
         <div>
         <button type='submit' className='submit__container'>
-          Sign In
+          Sign Up
+
         </button>
         </div>
         

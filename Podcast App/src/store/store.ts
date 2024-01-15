@@ -1,5 +1,6 @@
-
 import { favoriteShowSlice } from './favoriteShowSlice';
+import { tokenSlice } from './tokenSlice';
+import { IdSlice } from './IdSlice';
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 
@@ -8,6 +9,8 @@ import { useDispatch } from 'react-redux';
 export const store = configureStore({
     reducer: {
       favoriteShow: favoriteShowSlice.reducer,
+      token: tokenSlice.reducer,
+      id: IdSlice.reducer
     },
   });
 
