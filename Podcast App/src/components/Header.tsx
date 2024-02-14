@@ -2,14 +2,24 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../Client';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setId } from '../store/IdSlice';
-
+import { addId, resetId} from '../store/IdSlice';
+import { resetToken } from '../store/tokenSlice';
+import { useNavigate } from 'react-router-dom';
 
 
 export const Header = () => {
   const token = useSelector((state: RootState) => state.token)
   const id = useSelector((state: RootState) => state.id.id)
   const dispatch = useDispatch();
+  const navigate = useNavigate()
+ 
+  const removeIdAndToken = () =>{
+    
+    dispatch(resetId());
+    dispatch(resetToken())
+    navigate('/')
+    
+  }
 
     return(
         <div>
@@ -20,13 +30,15 @@ export const Header = () => {
             <h1 className="podcast__name">Podify</h1>
           </div>
           <div className="right__elements">
-          <Link to="./components/FavoritesPage">
+          <Link to="../pages/FavoritesPage">
            <button 
            className="favorites__button"
            >
             Favorites
            </button>
           </Link>
+          {id && <button className="favorites__button" onClick={removeIdAndToken}>Sign Out</button>}
+          {token && <button className="favorites__button" onClick={removeIdAndToken}>Log Out</button>}
           </div>
           </nav>
           ) : (
@@ -47,14 +59,6 @@ export const Header = () => {
              className="LogIn__button"
              >
               Log In
-             </button>
-            </Link>
-
-            <Link to="./components/FavoritesPage">
-             <button 
-             className="favorites__button"
-             >
-              Favorites
              </button>
             </Link>
             </div>

@@ -1,27 +1,37 @@
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
 
 
-// Defined the initial state for the token.
-type tokenObject= {
-    user: {} | null;
-    session: {} | null;
-  };
 
-const initialTokenState: tokenObject | null = null;
+type TokenState = {
+  session?: {
+    access_token: string;
+  };
+  
+}
+
+const initialTokenState: TokenState = {
+  session: {
+    access_token: '',
+  },
+};
 
 
 export const tokenSlice = createSlice({
-    name: 'Token',
+    name: 'token',
     initialState: initialTokenState,
     reducers: {
-      setToken(state, action: PayloadAction<tokenObject>){
-        return {
-          ...state,
-          ...action.payload,
+      setToken: (state, action: PayloadAction<string>) => {
+        state.session = {
+          access_token: action.payload,
         };
-      }
+      },
+      resetToken: (state) => {
+        state.session = {
+          access_token: '',
+        };
+      },
     },
   });
 
-export const { setToken} = tokenSlice.actions;
+export const { setToken, resetToken} = tokenSlice.actions;
 export default tokenSlice.reducer;

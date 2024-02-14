@@ -1,25 +1,29 @@
-import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { supabase } from '../Client';
 
-
-// Defined the initial state to keep track if a new user signs in through an id.
-
-const initialIdState = {
-    id: '',
+type idData = {
+  id: string[]
 }
 
+const initialIdState: idData = {
+  id: []
+}
 
 export const IdSlice = createSlice({
-    name: 'id',
-    initialState: initialIdState,
-    reducers: {
-      setId: (state, action: PayloadAction<string>) => {
-        state.id = action.payload;
-      },
-      resetId: (state) => {
-       state.id = '';
-      }
+  name: 'id',
+  initialState: initialIdState,
+  reducers: {
+    addId: (state, action: PayloadAction<string>) => {
+      state.id.push(action.payload)
     },
-  });
+    resetId: (state) => {
+      return {
+        ...state,
+        id:  [],
+      };
+    },
+  },
+});
 
-export const { setId, resetId} = IdSlice.actions;
+export const { addId, resetId } = IdSlice.actions;
 export default IdSlice.reducer;

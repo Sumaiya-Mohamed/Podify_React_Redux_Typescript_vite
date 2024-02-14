@@ -2,12 +2,15 @@ import React, {useState, useRef, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState, useAppDispatch } from '../store/store';
-import { FilterBar } from './FavoritesFilterBar';
-import { Footer } from './Footer';
+import { FilterBar } from '../components/FavoritesFilterBar';
+import { Footer } from '../components/Footer';
 import { addToShowFavorites, removeFromShowFavorites, clearShowFavorites } from '../store/favoriteShowSlice';
 import AudioPlayer from 'react-h5-audio-player';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
+import { supabase } from '../Client';
+import { IdSlice } from '../store/IdSlice';
+import { addId } from '../store/IdSlice';
 
 type FavoriteShowData = Array<FavoriteShow>;
 
@@ -84,14 +87,16 @@ export const FavoritesPage: React.FC = () => {
   const [sortOption, setSortOption] = React.useState<string>('');
   const audioRef = useRef(null);
 
+  const id = useSelector((state: RootState) => state.id)
+  const userData = useSelector((state: RootState) => state.userData)
   const navigate = useNavigate();
 
   //This function takes the user back to the home page.
   const backToHome = () => {
-    navigate('/');
+    navigate('/components/Homepage');
   };
 
-  useEffect(() => {
+  /*useEffect(() => {
     //Using local storage to store the favorite shows.
     const favoriteShowsFromLocalStorage = localStorage.getItem('favoriteShows');
     if (favoriteShowsFromLocalStorage) {
@@ -102,7 +107,39 @@ export const FavoritesPage: React.FC = () => {
         dispatch(addToShowFavorites(show));
       });
     }
-  }, []);
+  }, []);*/
+
+  
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('users')
+          .select('favorites')
+          .eq('id', userData.id);
+
+        console.log(data);
+        if (error) {
+          console.error('Error fetching user data:', error);
+        } else {
+          // Update the local state with user's favorite shows
+         const favoritesFromSupabase: FavoriteShowData = data.map((item) => item.favorites);
+          setAllFavoriteShows(favoritesFromSupabase);
+          // Dispatch the action to update favorites in the store
+          dispatch(clearShowFavorites());
+          favoritesFromSupabase.forEach((show) => {
+            dispatch(addToShowFavorites(show));
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, [userData.id, dispatch]);
+  
 
   
   const handleSearch = (query: string) => {
@@ -274,19 +311,19 @@ return (
       handleGenreFilter= {handleGenreFilter}
       />
       <div className="preview__container">
-      {favoriteShow.map((show) => {
+      {favoriteShow.flatMap((show,index) => {
               
             return (
               <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
                onClick={() => openDialog(show)}
               >
-                   <div>
+            <div key={index}>
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
            src={show.image} alt={show.title} />
            </div>
            <div className="preview__content">
              <h3 className="preview__title">{show.title}</h3>
-             <h3> Seasons:{show.seasons.length}</h3>
+             <h3> Seasons:{show.seasons}</h3>
              <div className="genres-container">
                <p className="show__genre"> 
                  <span className="genre__title">Genres: </span>

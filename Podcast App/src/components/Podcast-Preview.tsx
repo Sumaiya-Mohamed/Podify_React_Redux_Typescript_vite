@@ -10,6 +10,10 @@ import { RootState, AppDispatch } from '../store/store';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
+import { supabase } from '../Client';
+
+
+
 
 type AllShowData = Array<ShowPreview>;
 type ShowOriginalData = Array<Show>
@@ -100,9 +104,12 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
   const [genreOption, setGenreOption] = useState<string>('')
+  const [newId, setNewId] = useState<string>('')
  
 
   const favoriteShow = useSelector((state: RootState) => state.favoriteShow);
+  const ids= useSelector((state: RootState) => state.id.id);
+  const user = useSelector((state: RootState) => state.userData)
   const dispatch = useDispatch<AppDispatch>();
   const audioRef = useRef(null);
 
@@ -145,7 +152,67 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
     setFavoriteMap(newFavoriteMap);
   }, [favoriteShow]);
   
+
+   // Function to add a favorite show to Supabase
+   const addFavoritesToShow = async (id: string, show: FavoriteShow) => {
+   console.log(id)
+    try {
+        // Check if the user already exists.
+        const { data: existingUsers, error: userError } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', id);
+
+        if (userError) {
+            console.error('Error checking user', userError);
+            return;
+        }
+
+        if (existingUsers && existingUsers.length > 0) {
+            // User exists, update their favorites
+            const existingUser = existingUsers[0];
+            const updatedFavorites = [...existingUser.favorites, show];
+
+            const { data: updateData, error: updateError } = await supabase
+                .from('users')
+                .update({ favorites: updatedFavorites })
+                .eq('id', id);
+
+            if (updateError) {
+                console.error('Error updating favorites:', updateError);
+            } else {
+                console.log('Favorites updated successfully:', updateData);
+            }
+        } else {
+            // If the user does not exist, return an error.
+            throw new Error('User does not exist');
+        }
+    } catch (error) {
+        console.error('Error adding favorite show:', error);
+    }
+};
+
+console.log(ids)
   
+// Function to remove a favorite show from Supabase
+const removeFavoriteFromShow = async (id: string, showId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .delete()
+      .eq('id',id)
+      .eq('favorites.id', showId);
+
+    if (error) {
+      console.error('Error removing favorite show:', error);
+    } else {
+      console.log('Favorite show removed successfully:', data);
+    }
+  } catch (error) {
+    console.error('Error removing favorite show:', error);
+  }
+};
+
   //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
@@ -259,28 +326,31 @@ const handleGenreFilter = (genre: string) => {
   }
 };
 
-useEffect(() => {
+//This code adds the shows marked as favorite to the favorites page using localStorage.
+/*useEffect(() => {
   updateFavoritesInLocalStorage(favoriteShow);
 }, [favoriteShow]);
 
 const updateFavoritesInLocalStorage = (favorites: FavoriteShowData) => {
   localStorage.setItem('favoriteShows', JSON.stringify(favorites));
 };
+*/
 
 
 const handleAddToFavorites = () => {
   if (!selectedShow) return;
 
-  setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+  const isShowFavorite = favoriteShow.some((favShow) => favShow.id === selectedShow.id);
 
-  if (!isFavorite) {
+  if (!isShowFavorite) {
     dispatch(addToShowFavorites(selectedShow));
+    addFavoritesToShow(user.id, selectedShow);
   } else {
     dispatch(removeFromShowFavorites(selectedShow.id));
+    removeFavoriteFromShow(user.id, selectedShow.id);
   }
-
-  updateFavoritesInLocalStorage(favoriteShow);
 };
+
 
 
 const handleMiniAudioClose = () => {

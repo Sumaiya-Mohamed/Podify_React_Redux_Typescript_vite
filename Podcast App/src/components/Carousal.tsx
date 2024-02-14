@@ -1,4 +1,7 @@
 import React from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../store/store';
+import { setToken } from '../store/tokenSlice';
 import Slider, { Settings } from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -46,10 +49,12 @@ type CarouselProps = {
 
   };
   
-
+  const token = useSelector((state: RootState) => state.token)
+ 
+  
   return (
     <div>
-      <h3 className="carousal__heading">You may be interested in...</h3>
+      {token? (<h3 className="carousal__heading">Welcome back {token?.user?.user_metadata?.full_name}!</h3>) : <h3 className="carousal__heading">You may be interested in...</h3>}
       <div className="carousal__container">
       <Slider {...settings}>
         {data.map((show) => {

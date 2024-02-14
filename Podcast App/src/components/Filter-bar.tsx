@@ -42,6 +42,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
   const [sortShows, setSortShows] = useState<string>('');
   const [genre, setGenre] = useState<string>('')
 
+ 
+
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const query = event.target.value;
     setSearchQuery(query);
