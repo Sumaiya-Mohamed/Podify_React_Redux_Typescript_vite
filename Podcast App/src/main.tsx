@@ -19,6 +19,7 @@ import './css/Podcast-Preview.css'
 import './css/Footer.css'
 import './css/favoritesPage.css'
 import './css/SignUp.css'
+import './css/LogIn.css'
 
 const AppRouter = () => {
   const dispatch = useDispatch();

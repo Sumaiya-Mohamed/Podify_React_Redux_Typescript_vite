@@ -145,13 +145,14 @@ export const LogIn = () => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        
-
+      <form onSubmit={handleSubmit}
+       className='login__container'
+      >
         <input 
           placeholder='Email'
           name='email'
           onChange={handleChange}
+          className='email__login'  
         />
 
         <input 
@@ -159,15 +160,23 @@ export const LogIn = () => {
           name='password'
           type="password"
           onChange={handleChange}
+          className='password__login'
         />
+        
+        <div className='button__containers'>
+        <Link to='/pages/SignUp'>
+        <button type='submit'  className='signup__login'>
+          Sign Up
+        </button>
+        </Link> 
 
-        <button type='submit'>
+        <button type='submit'  className='submit__login'>
           Submit
         </button>
-
+        </div>
 
       </form>
-      Don't have an account? <Link to='/pages/SignUp'>Sign Up</Link> 
+      
     </div>
   )
 }
