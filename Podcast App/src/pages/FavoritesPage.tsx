@@ -9,8 +9,7 @@ import AudioPlayer from 'react-h5-audio-player';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
-import { IdSlice } from '../store/IdSlice';
-import { addId } from '../store/IdSlice';
+
 
 type FavoriteShowData = Array<FavoriteShow>;
 
@@ -124,13 +123,16 @@ export const FavoritesPage: React.FC = () => {
           console.error('Error fetching user data:', error);
         } else {
           // Update the local state with user's favorite shows
-         const favoritesFromSupabase: FavoriteShowData = data.map((item) => item.favorites);
-          setAllFavoriteShows(favoritesFromSupabase);
+          const userFavorites: FavoriteShowData = data[0].favorites
+         
+          setAllFavoriteShows(userFavorites);
+          
           // Dispatch the action to update favorites in the store
           dispatch(clearShowFavorites());
-          favoritesFromSupabase.forEach((show) => {
+          userFavorites.forEach((show) => {
             dispatch(addToShowFavorites(show));
           });
+          console.log(favoriteShow)
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -311,19 +313,19 @@ return (
       handleGenreFilter= {handleGenreFilter}
       />
       <div className="preview__container">
-      {favoriteShow.flatMap((show,index) => {
+      {favoriteShow.map((show,index) => {
               
             return (
-              <button key={show.title} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
+              <button key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
                onClick={() => openDialog(show)}
               >
-            <div key={index}>
+            <div key={show.id}>
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
-           src={show.image} alt={show.title} />
+           src= {show.image} alt={show.title} />
            </div>
            <div className="preview__content">
              <h3 className="preview__title">{show.title}</h3>
-             <h3> Seasons:{show.seasons}</h3>
+             <h3>Seasons: {show.seasons.length}</h3>
              <div className="genres-container">
                <p className="show__genre"> 
                  <span className="genre__title">Genres: </span>

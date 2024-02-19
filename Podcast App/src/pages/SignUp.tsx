@@ -158,22 +158,17 @@ async function handleUserRegistration(){
           onChange={handleChange}
           className='password__container'
         />
-        <div>
-        <button type='submit' className='submit__container'>
+        <div className='button__container'>
+        
+        <button type='submit' className='submit__signup'>
           Sign Up
-
         </button>
-       
-        </div>
+       </div>
         
 
        </div>
       </form>
-      <Link to='/pages/LogIn'>
-      <button  className='login__container'>
-          Log In?
-      </button>
-      </Link>
+      
     </div>
   )
 }

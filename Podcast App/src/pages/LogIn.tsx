@@ -37,7 +37,7 @@ type user = {
   favorites: FavoriteShowData;
 };
 
-export const LogIn = () => {
+export const LogIn = ({setPage}) => {
   let navigate = useNavigate()
   const ids = useSelector((state: RootState) => state.id.id);
   const users =  useSelector((state: RootState) => state.users);
@@ -142,11 +142,18 @@ export const LogIn = () => {
  }
  }, [])*/
 
+ const goToSignUpPage = () => {
+  setPage('SignUp')
+ }
+ 
+ const goBackToHomePage = () => {
+  setPage('Home')
+ }
 
   return (
     <div>
       <form onSubmit={handleSubmit}
-       className='login__container'
+       className='loginform__container'
       >
         <input 
           placeholder='Email'
@@ -164,13 +171,13 @@ export const LogIn = () => {
         />
         
         <div className='button__containers'>
-        <Link to='/pages/SignUp'>
-        <button type='submit'  className='signup__login'>
-          Sign Up
+       
+        <button type='submit'  className='signup__login' onClick={goToSignUpPage}>
+          Sign Up?
         </button>
-        </Link> 
+    
 
-        <button type='submit'  className='submit__login'>
+        <button type='submit'  className='submit__login' onClick={goBackToHomePage}>
           Submit
         </button>
         </div>

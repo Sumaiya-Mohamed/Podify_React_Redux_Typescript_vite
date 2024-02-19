@@ -1,11 +1,16 @@
-.login__container{
+.loginform__container{
     display: grid;
     width: 35%;
     height: 280px;
     position: absolute;
     top: 30%;
     left: 23%;
-    padding: 5px;
+    padding: 15px;
+    border: solid;
+    border-color:rgba(212, 0, 255, 0.76);
+    border-width: 2px;
+    margin-left: 130px;  
+    border-radius: 20px;
 }
 
 .email__login{
@@ -75,6 +80,7 @@
     border: solid;
     border-color:rgba(212, 0, 255, 0.76);
     border-width: 2px;
+    cursor: pointer;
 }
 
 .signup__login{
@@ -87,4 +93,5 @@
     border: solid;
     border-color:rgba(212, 0, 255, 0.76);
     border-width: 2px;
+    cursor: pointer;
 }
