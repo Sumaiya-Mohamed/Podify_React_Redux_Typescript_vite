@@ -11,7 +11,8 @@ import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteSh
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
-
+import { setUsersData } from '../store/userDataSlice';
+import { Footer } from './Footer';
 
 
 
@@ -40,11 +41,6 @@ type Show = {
   seasons: number;
   genres: Array<number>;
   updated: Date;
-};
-
-
-type PodcastPreviewProps = {
-  data: ShowOriginalData
 };
 
 type Seasons = Array<Season>
@@ -86,9 +82,24 @@ type FavoriteShow = {
   updated: Date;
 };
 
+type userInfo = {
+  name: string;
+  id: string;
+  favorites: FavoriteShowData;
+};
+
+type PodcastPreviewProps = {
+  data: ShowOriginalData;
+  setUserInfo : React.Dispatch<React.SetStateAction<{
+    name: string;
+    id: string;
+    favorites: any[];
+}>>
+   userInfo: userInfo;
+};
 
 
-export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
+export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,userInfo}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
   const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
@@ -142,11 +153,23 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
         
     void showData();
   }, [ data]);
+
+  
+  useEffect(() => {
+    // Load user data from local storage when the component mounts
+    const storageUserInfo = localStorage.getItem('user');
+    if (storageUserInfo) {
+        const info = JSON.parse(storageUserInfo);
+        dispatch(setUsersData(info));
+        console.log(info)
+    }
+}, [dispatch]);
+  
    
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (!user) return; // Ensure user is available before fetching data
+        if (user.id !== '') {
   
         const { data, error } = await supabase
           .from('users')
@@ -166,16 +189,15 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
             dispatch(addToShowFavorites(show));
           });
         }
+      }
       } catch (error) {
         console.error('Error fetching user data:', error.message);
       }
     };
   
     fetchUserData();
-  }, [user, dispatch]); // Depend on user and dispatch
+  }, [user.id, dispatch]); // Depend on user and dispatch
 
- 
-  
   const addToFavorites = async (showId: string) => {
     try {
       if (!user || !selectedShow) return;
@@ -226,10 +248,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
       console.error('Error removing favorite show:', error.message);
     }
   };
-  
-  
-
-
   //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
@@ -404,7 +422,6 @@ const handleAddToFavorites = async () => {
 
 
 
-
 const handleMiniAudioClose = () => {
   setIsAudioPlaying(false);
   setCurrentEpisodeUrl(null);
@@ -432,10 +449,10 @@ const handleMiniAudioClose = () => {
         <div key={show.id}>
           <button className={`preview__information ${filteredShows.length === 1 ? 'preview__information-large' : ''}`}
             onClick={() => openDialog(show)}>
-            <div>
+       
            <img className={`preview__img ${filteredShows.length === 1 ? 'preview__img-large' : ''}`}
            src={show.image} alt={show.title} />
-           </div>
+       
            <div className="preview__content">
              <h3 className="preview__title">{show.title}</h3>
              <h3> Seasons:{show.seasons.length}</h3>
@@ -464,7 +481,8 @@ const handleMiniAudioClose = () => {
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
             <button className="favorite__button" onClick={() => handleAddToFavorites()}>
-               {favoriteShowArray.some((favShow: any) => favShow.id === selectedShow.id) 
+               {
+                favoriteShowArray.some((favShow) => favShow.id === selectedShow.id)
               
                ? (
                 <FavoriteOutlinedIcon />
@@ -640,7 +658,7 @@ const handleMiniAudioClose = () => {
       </div>
        )
      }
-        
+        <Footer />
     </div>
 
   )

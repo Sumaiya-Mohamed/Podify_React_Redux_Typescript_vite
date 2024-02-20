@@ -40,9 +40,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
   };
 
   return (
-    <div>
-      <h3 className="heading__check">Check out all your Favs!</h3>
-      <div className="filter__bar">
+    <div >
+      <div className="Favoritesfilter__container">
+      <div className="Favoritesfilter__bar">
         <form className="search__container" onSubmit={handleSubmit}>
           <label htmlFor="search" className="search__label">
             Search
@@ -89,7 +89,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
         </select>
         </div>
       </div>
-    
+      </div>
     </div>
   );
 };

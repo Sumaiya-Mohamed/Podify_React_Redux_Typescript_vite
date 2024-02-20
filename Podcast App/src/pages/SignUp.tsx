@@ -10,9 +10,45 @@ import { RootState } from '../store/store';
 import { v4 as uuidv4 } from 'uuid';
 import { userInfo } from 'os';
 
+type FavoriteShowData = Array<FavoriteShow>;
 
+type FavoriteShow = {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+    seasons: Array<{
+      season: number;
+      title: string;
+      image: string;
+      episodes: Array<{
+        title: string;
+        description: string;
+        episode: number;
+        file: string;
+      }>;
+    }>;
+    genres: Array<string>;
+    updated: Date;
+  };
 
-export const SignUp = () => {
+  type userInfo = {
+    name: string;
+    id: string;
+    favorites: FavoriteShowData;
+  };
+
+  type SignUpProps = {
+   setUserInfo : React.Dispatch<React.SetStateAction<{
+    name: string;
+    id: string;
+    favorites: any[];
+}>>
+   userInfo: userInfo;
+   setPage: React.Dispatch<React.SetStateAction<string>>
+  };
+
+export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) => {
 
   const allIds = useSelector((state: RootState) => state.id.id)
   const token = useSelector((state: RootState) => state.token)
@@ -44,7 +80,6 @@ export const SignUp = () => {
 /*useEffect(() => {
   fetchUsers()
 }, [])
-
 async function fetchUsers(){
   const {data} = await supabase
     .from('users')
@@ -85,7 +120,9 @@ async function handleUserRegistration(){
     ])
     
     dispatch(setUsersData({id: userId, name: formData.fullName, favorites: favorites }))
-    console.log(user)
+    
+    localStorage.setItem('user', JSON.stringify({id: userId, name: formData.fullName, favorites: favorites }))
+    console.log(userInfo)
     if(error){
       console.log('Error creating user:', error)
     }else{
@@ -116,12 +153,13 @@ async function handleUserRegistration(){
      // dispatch(setId(data.user.id))
       dispatch(setUsers(data))
       handleUserRegistration();
-      navigate('/components/Homepage')
+      setPage('Home')
       alert('Check your email for verification link')
     } catch (error) {
       alert(error)
     }
-
+    
+    
   }
 
   /*useEffect(() => {
@@ -134,7 +172,7 @@ async function handleUserRegistration(){
   
 
   return (
-    <div>
+    <div className='signup__page'>
       <form onSubmit={handleSubmit}>
         <div className='signup__container'>
         <input 

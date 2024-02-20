@@ -1,4 +1,19 @@
-.favorites__reset{
+.favoritesHeader__container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #131313;
+  height: 60px;
+}
+
+.heading{
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: rgba(212, 0, 255, 0.76);
+  font-weight: lighter;
+  margin-left: 15px;
+}
+
+.favorites__buttons{
         background-color:#232323;
         border: solid;
         border-color:rgba(212, 0, 255, 0.76);
@@ -10,13 +25,16 @@
         color:rgba(212, 0, 255, 0.76);
         font-size: 18px;
         border-radius: 8px;
+        margin-right: 35px;
+        width: 90%;
+        height: 35px;
       }
       
-      .favorites__reset:hover {
+      .favorites__buttons:hover {
         transform: scale(1.1);
       }
       
-      .favorites__reset:active {
+      .favorites__buttons:active {
         transform: scale(0.9);
       }
 
@@ -57,4 +75,18 @@
     position: absolute;
     width: 50%;
     height: 50px;
+}
+
+.Favoritesfilter__container{
+  display: flex;
+  justify-content: center;
+}
+
+.Favoritesfilter__bar{
+  display: flex;
+  width: 80%;
+  align-items: center;
+  height: fit-content;
+  margin-top: 30px;
+  margin-left: 45px;
 }

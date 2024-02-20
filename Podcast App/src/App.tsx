@@ -64,6 +64,11 @@ export const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isfetched, setIsFetched] = useState<boolean>(true);
   const [page, setPage] = useState<string>('Home')
+  const [userInfo,setUserInfo] = useState({
+    name: '',
+    id: '',
+    favorites: []
+  })
   
   const dispatch = useDispatch();
   const navigate = useNavigate()
@@ -127,6 +132,7 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
     
   }, [podcastData]);
+
  
     const showId = podcastData.flatMap((show) =>{
         return(
@@ -198,6 +204,8 @@ export const App: React.FC = () => {
             </div>
            <PodcastPreview
            data= {podcastData}
+           setUserInfo = {setUserInfo}
+           userInfo = {userInfo}
           />
        
           </div>
@@ -205,11 +213,19 @@ export const App: React.FC = () => {
           )}
           </div>
           }
-          {page === 'LogIn' && <LogIn 
+          {page === 'LogIn' && 
+          <LogIn 
           setPage = {setPage}
+          setUserInfo = {setUserInfo}
+          userInfo = {userInfo}
           />}
           {page === 'Favorites' && <FavoritesPage />}
-          {page === 'SignUp' && <SignUp />}
+          {page === 'SignUp' && 
+          <SignUp
+            setUserInfo = {setUserInfo}
+            userInfo = {userInfo}
+            setPage = {setPage}
+          />}
           </div>
           
     

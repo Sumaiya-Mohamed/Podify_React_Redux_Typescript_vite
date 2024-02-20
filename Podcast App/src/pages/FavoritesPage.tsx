@@ -293,15 +293,10 @@ const clearFavorites = () => {
 
 return (
  <div>
-      <div className="header__container">
-        <div className="left__elements">
-          <h1 className="podcast__name">Favorites</h1>
-        </div>
+      <div className="favoritesHeader__container">
+      <h3 className="heading">Check out all your Favs!</h3>
         <div className="right__elements">
-          <button onClick={backToHome} className="favorites__button">
-            Back
-          </button>
-          <button onClick={clearFavorites} className="favorites__reset">
+          <button onClick={clearFavorites} className="favorites__buttons">
             Reset
           </button>
         </div>
@@ -319,11 +314,11 @@ return (
               <button key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
                onClick={() => openDialog(show)}
               >
-            <div key={show.id}>
+           
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
            src= {show.image} alt={show.title} />
-           </div>
-           <div className="preview__content">
+      
+           <div className="preview__content" key={show.id}>
              <h3 className="preview__title">{show.title}</h3>
              <h3>Seasons: {show.seasons.length}</h3>
              <div className="genres-container">
