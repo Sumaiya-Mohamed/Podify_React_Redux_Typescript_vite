@@ -2,7 +2,7 @@
 
 
 
-@media (min-width: 1000px) {
+
   .filter__container{
     display:flex;
     justify-content: center;
@@ -104,4 +104,3 @@
     margin-left: 5px;
   }
   
-}

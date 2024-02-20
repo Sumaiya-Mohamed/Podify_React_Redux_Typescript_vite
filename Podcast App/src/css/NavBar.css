@@ -6,7 +6,7 @@
 }
 
 
-@media (min-width: 1000px) {
+
   .header__container{
     display: flex;
     flex-direction: column;
@@ -46,6 +46,12 @@
   align-items: center;
  }
 
+ .home::after{
+  display: flex;
+  align-items: center;
+  border-bottom-style: solid;
+ }
+
 .user{
   display: flex;
   align-items: center;
@@ -61,5 +67,5 @@
  margin-left: 3px;
 }
 
-}
+
 
