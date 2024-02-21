@@ -2,9 +2,11 @@ import React, { useState, useEffect, useRef} from 'react';
 import { FilterBar } from './Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import  {CircularProgress } from '@mui/material';
+import  {CircularProgress, Tooltip } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
@@ -13,6 +15,7 @@ import { allGenres } from '../data';
 import { supabase } from '../Client';
 import { setUsersData } from '../store/userDataSlice';
 import { Footer } from './Footer';
+import { Carousal } from './Carousal';
 
 
 
@@ -430,6 +433,11 @@ const handleMiniAudioClose = () => {
 
   return (
     <div>
+      <div className='carousal'>
+        <Carousal 
+        data = {data}
+        />
+      </div>
       <FilterBar
        onSearch={handleSearch}
        filteredShows={filteredShows}
@@ -472,6 +480,7 @@ const handleMiniAudioClose = () => {
      
        
        {dialogOpen && selectedShow && selectedSeasons && (
+       <div className='dialog__main'>
         <div className="dialog__container">
           <div className="blur__background" />
           <dialog className="dialog">
@@ -485,9 +494,9 @@ const handleMiniAudioClose = () => {
                 favoriteShowArray.some((favShow) => favShow.id === selectedShow.id)
               
                ? (
-                <FavoriteOutlinedIcon />
+                <BookmarkIcon style={{ fill: 'red' }}/>
                 ) : (
-                <FavoriteBorderOutlinedIcon />
+                <BookmarkBorderOutlinedIcon />
                 )}
            </button>
 
@@ -527,7 +536,7 @@ const handleMiniAudioClose = () => {
             </div>
               <div className="select__container">
                 <select value={selectedSeasonIndex ?? ''} onChange={handleSeasonSelect} className="seasons__select">
-                  <option value=""> Select a season</option>
+                  <option value=""> Season</option>
                   {selectedShow.seasons.map((season, index) => ( // Render only the seasons of the selected show
                     <option key={index} value={index}>
                       {season.season}
@@ -540,15 +549,19 @@ const handleMiniAudioClose = () => {
 
                  {/*First seasons information will display when dialog opens.*/}
                  {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
+                 
                 <div className="seasons__information">
+                  
                   <div className="seasons__title">
                   <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
                   <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
                   </div>
+                  <Tooltip title='Double click to play' arrow>
                   <ul className="seasons__episodes">
                     {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
+                   
                       <li key={index}  className="episodes">
-                       
+                      
                         <div  
                         className="play__button"
                         onClick={() =>{ handlePlayButtonClick(episode.file)
@@ -568,14 +581,17 @@ const handleMiniAudioClose = () => {
                           
                           
                           </div>
+                         
                       </li>
-                    
+                   
                     ))}
+
                   </ul>
-                  
+                  </Tooltip>
                   <button className="dialog__button" onClick={ closeDialog}>
                        Close
                      </button>
+               
                 </div>
               )}
             
@@ -627,11 +643,16 @@ const handleMiniAudioClose = () => {
             
           </dialog>
         </div>
+        </div>
       )}
        {isAudioPlaying && (
         <div className="mini__audiocontainer">
         <div className="mini__audio">
+          <div className="mini__img">
+          
           <img src={selectedShow.image}></img>
+          </div>
+          <div>
           <AudioPlayer
               ref={audioRef}
               autoPlay
@@ -641,10 +662,11 @@ const handleMiniAudioClose = () => {
               onPause={() => setIsPlaying(false)}
               onEnded={() => setIsPlaying(false)}
             />
-          <button 
+            <button 
           onClick={handleMiniAudioClose}
           className="mini__cancel"
            ><CloseIcon /></button>
+          </div>
         </div>
        </div>
       )}

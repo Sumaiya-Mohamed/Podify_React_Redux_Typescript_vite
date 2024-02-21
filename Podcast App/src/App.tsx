@@ -153,8 +153,8 @@ export const App: React.FC = () => {
           <h3 className='top__picks'> Top picks for you today</h3>
           <div className='buttons__container'>
          {isLoading ? (
-            <div className="loading__container">
-            <CircularProgress size={40} color="inherit" className="loading__open"/> 
+            <div className="loading__promocontainer">
+            <CircularProgress size={30} color="inherit" className="loading__open"/> 
            </div> 
          ) : (
           <div>
@@ -168,12 +168,6 @@ export const App: React.FC = () => {
                <div className="top__content">
                  <h3 className="top__title">{show?.title}</h3>
                  <h3> Seasons:{show?.seasons}</h3>
-                 <div className="genres__container">
-                   <p className="podcast__genre"> 
-                     <span className="genre__name">Genres: </span>
-                     {show?.genres && show?.genres.length > 0 ? show?.genres.join(', ') : 'Not applicable'}
-                   </p>
-                 </div>
                  <p>Updated:  {new Date(show?.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
                </div>
               

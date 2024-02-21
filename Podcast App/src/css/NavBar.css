@@ -5,8 +5,89 @@
     --color-medium-purple: #5a189a;
 }
 
+@media (min-width: 100px) and (max-width: 499px){
+ body .header__container{
+  height: 60px;
+  background-color: #131313;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: hidden;
+ }
+ 
+ .nav__buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 
+  .podcast__img{
+    display: none;
+  }
 
+  .podcast__name{
+    display: none;
+  }
+
+  .nav__buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding-left: 5px;
+    padding-top: 10px;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 10px;
+    align-items: center;
+   }
+
+   .home{
+    display: flex;
+    flex-direction: column;
+   }
+
+   .home > h3 {
+    padding-left: 8px;
+    margin-top: 0;
+   }
+
+   .user{
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+  }
+
+  .user > h3 {
+    padding-left: 8px;
+    margin-top: 0;
+   }
+
+  .bookmark{
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+  .bookmark > img {
+    width: 46%;
+    margin-left: 40px;
+    margin-bottom: 0;
+   }
+   
+   .bookmark > h3 {
+    padding-left: 2px;
+    padding-top: 1px;
+    margin-top: 0;
+    margin-left: 30px;
+   }
+  
+}
+
+@media only screen and (min-width: 500px){
   .header__container{
     display: flex;
     flex-direction: column;
@@ -69,3 +150,5 @@
 
 
 
+}
+ 
