@@ -2,12 +2,12 @@
  body .preview__container{
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr ));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr ));
     grid-gap: 20px;
     grid-row-gap: 35px; 
     padding-left: 10px;
     margin-top: 45px;
-    margin-right: 5px;
+    margin-right: 15px;
     justify-items: center;
     overflow-x: hidden;
     padding-right: 5px;
@@ -439,7 +439,7 @@
 }
 
 
-@media (min-width: 500px ) and (max-width: 979px){
+@media (min-width: 500px ){
 
   .carousal{
     display: none;
@@ -459,11 +459,11 @@
  
  .preview__information{
     width: 100%;
-    font-size: 15px;
+    font-size: 12px;
     padding-left: 10px;
     padding-right: 10px;
     background-color: rgba(0, 0, 0, 0.3);
-    height: 200px;
+    height: 150px;
     min-width: fit-content;
     min-height: fit-content;
     color: rgb(150, 150, 150);
@@ -545,11 +545,16 @@
     line-height: 1.2em;
     font-weight: 200;
     color: rgb(218, 218, 218);
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 3px;
  }
 
  .preview__content{
     width: 80%;
     padding-left: 15px;
+    padding-bottom: 10px;
+    line-height: 1em;
  }
 
  /*Dialog styling*/

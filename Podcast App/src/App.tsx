@@ -159,16 +159,17 @@ export const App: React.FC = () => {
          ) : (
           <div>
             {promoShows.map((show,index) => (
-            <div key={index}>
+            <div key={index} className='top__container'>
               <button className={'top__preview'}>
                 <div className='container'>
                <img className={'top__img '}
                src={show?.image} alt={show?.title} />
                </div>
                <div className="top__content">
-                 <h3 className="top__title">{show?.title}</h3>
-                 <h3> Seasons:{show?.seasons}</h3>
-                 <p>Updated:  {new Date(show?.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
+               <h3 className="top__title">{show?.title}</h3>
+                 
+                 <h3 className='top__seasons'> Seasons:{show?.seasons}</h3>
+                 <p className='top__updated'>Updated:  {new Date(show?.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
                </div>
               
              </button>
