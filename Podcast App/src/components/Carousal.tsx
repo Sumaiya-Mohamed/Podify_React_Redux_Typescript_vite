@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect,useState} from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { setToken } from '../store/tokenSlice';
@@ -38,37 +38,64 @@ type CarouselProps = {
 
 
   export const Carousal: React.FC<CarouselProps> = ({ data }) => {
-    
+    const [isFetched,setIsFetched] = useState<boolean>()
+    const [promoShows,setPromoShows] = useState<ShowPreview>([])
     const settings: Settings = {
-    dots: false,
+    dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
-
+    arrows: false,
   };
   
   const token = useSelector((state: RootState) => state.token)
  
+  useEffect(() => {
+    let count = 0;
+    setIsFetched(true)
+    const generatePromoShows = () => {
+      if (count < 7) {
+        const randomIndex = Math.floor(Math.random() * data.length);
+        const topShow = data[randomIndex];
+        setPromoShows(prevPromoShows => [...prevPromoShows, topShow]);
+        count++;
+      } else {
+        clearInterval(interval);
+      }
+    };
+  
+    const interval = setInterval(generatePromoShows, 1000);
+    
+    setIsFetched(false)
+    return () => clearInterval(interval);
+    
+  }, [data]);
+
   
   return (
     <div>
-      {token? (<h3 className="carousal__heading">Welcome back {token?.user?.user_metadata?.full_name}!</h3>) : <h3 className="carousal__heading">You may be interested in...</h3>}
       <div className="carousal__container">
+        <div className="carousal__top">
+          <h3> Top picks for you today</h3>
+        </div>
       <Slider {...settings}>
-        {data.map((show) => {
+        {promoShows.map((show) => {
 
           return (
             
-            <div key={show.id} className="carousal__slide">
-              <img className="carousal__img" src={show.image} alt={show.title} />
-              <div className="overlay"></div>
+            <div key={show?.id} className="carousal__slide">
+              <div className="carousal__info">
+              
+              <img className="carousal__img" src={show?.image} alt={show?.title} />
+             
               <div className="carousal__information">
-                <h3 className="carousal__title">{show.title}</h3>
-                <h3 className="carousal__seasons">Seasons: {show.seasons}</h3>
+                <h3 className="carousal__title">{show?.title}</h3>
+                <h3 className="carousal__seasons">Seasons: {show?.seasons}</h3>
+              </div>
               </div>
             </div>
+
           );
         })}
       </Slider>

@@ -2,16 +2,20 @@ import React, { useState, useEffect, useRef} from 'react';
 import { FilterBar } from './Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import  {CircularProgress } from '@mui/material';
+import  {CircularProgress, Tooltip } from '@mui/material';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
 import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
-
+import { setUsersData } from '../store/userDataSlice';
+import { Footer } from './Footer';
+import { Carousal } from './Carousal';
 
 
 
@@ -40,11 +44,6 @@ type Show = {
   seasons: number;
   genres: Array<number>;
   updated: Date;
-};
-
-
-type PodcastPreviewProps = {
-  data: ShowOriginalData
 };
 
 type Seasons = Array<Season>
@@ -86,9 +85,24 @@ type FavoriteShow = {
   updated: Date;
 };
 
+type userInfo = {
+  name: string;
+  id: string;
+  favorites: FavoriteShowData;
+};
+
+type PodcastPreviewProps = {
+  data: ShowOriginalData;
+  setUserInfo : React.Dispatch<React.SetStateAction<{
+    name: string;
+    id: string;
+    favorites: any[];
+}>>
+   userInfo: userInfo;
+};
 
 
-export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
+export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,userInfo}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
   const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
@@ -107,7 +121,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [newId, setNewId] = useState<string>('')
  
 
-  const favoriteShow = useSelector((state: RootState) => state.favoriteShow);
+  const favoriteShowArray = useSelector((state: RootState) => state.favoriteShow);
   const ids= useSelector((state: RootState) => state.id.id);
   const user = useSelector((state: RootState) => state.userData)
   const dispatch = useDispatch<AppDispatch>();
@@ -143,80 +157,112 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
     void showData();
   }, [ data]);
 
+  
   useEffect(() => {
-    // Initialize favoriteMap based on favorites
-    const newFavoriteMap: Record<string, boolean> = {};
-    favoriteShow.forEach((favShow) => {
-      newFavoriteMap[favShow.id] = true;
-    });
-    setFavoriteMap(newFavoriteMap);
-  }, [favoriteShow]);
+    // Load user data from local storage when the component mounts
+    const storageUserInfo = localStorage.getItem('user');
+    if (storageUserInfo) {
+        const info = JSON.parse(storageUserInfo);
+        dispatch(setUsersData(info));
+        console.log(info)
+    }
+}, [dispatch]);
   
+   
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        if (user.id !== '') {
+  
+        const { data, error } = await supabase
+          .from('users')
+          .select('favorites')
+          .eq('id', user.id)
+          .single();
+  
+        if (error) {
+          console.error('Error fetching user data:', error.message);
+          return;
+        }
+  
+        // Check if favorites data is available
+        if (data) {
+          // Dispatch action to add favorite shows to state
+          data.favorites.forEach((show: FavoriteShow) => {
+            dispatch(addToShowFavorites(show));
+          });
+        }
+      }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      }
+    };
+  
+    fetchUserData();
+  }, [user.id, dispatch]); // Depend on user and dispatch
 
-   // Function to add a favorite show to Supabase
-   const addFavoritesToShow = async (id: string, show: FavoriteShow) => {
-   console.log(id)
+  const addToFavorites = async (showId: string) => {
     try {
-        // Check if the user already exists.
-        const { data: existingUsers, error: userError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', id);
-
-        if (userError) {
-            console.error('Error checking user', userError);
-            return;
-        }
-
-        if (existingUsers && existingUsers.length > 0) {
-            // User exists, update their favorites
-            const existingUser = existingUsers[0];
-            const updatedFavorites = [...existingUser.favorites, show];
-
-            const { data: updateData, error: updateError } = await supabase
-                .from('users')
-                .update({ favorites: updatedFavorites })
-                .eq('id', id);
-
-            if (updateError) {
-                console.error('Error updating favorites:', updateError);
-            } else {
-                console.log('Favorites updated successfully:', updateData);
-            }
-        } else {
-            // If the user does not exist, return an error.
-            throw new Error('User does not exist');
-        }
-    } catch (error) {
-        console.error('Error adding favorite show:', error);
-    }
-};
-
-console.log(ids)
+      if (!user || !selectedShow) return;
   
-// Function to remove a favorite show from Supabase
-const removeFavoriteFromShow = async (id: string, showId: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .delete()
-      .eq('id',id)
-      .eq('favorites.id', showId);
-
-    if (error) {
-      console.error('Error removing favorite show:', error);
-    } else {
-      console.log('Favorite show removed successfully:', data);
+      const isInDatabase = user.favorites.some((favShow) => favShow.id === showId);
+      const isFavoriteInLocalState = favoriteShowArray.some((favShow) => favShow.id === showId);
+  
+      if (!isInDatabase && !isFavoriteInLocalState) {
+        const updatedFavorites = [...user.favorites, selectedShow];
+  
+        const { data, error } = await supabase
+          .from('users')
+          .update({ favorites: updatedFavorites })
+          .eq('id', user.id);
+  
+        if (error) {
+          throw new Error('Error updating favorites: ' + error.message);
+        }
+  
+        dispatch(addToShowFavorites(selectedShow));
+        console.log('Favorite show added successfully:', data);
+      } else {
+        console.log('Show is already a favorite.');
+      }
+    } catch (error) {
+      console.error('Error adding favorite show:', error.message);
     }
-  } catch (error) {
-    console.error('Error removing favorite show:', error);
-  }
-};
-
+  };
+  
+  const removeFromFavorites = async (showId: string) => {
+    try {
+      if (!user || !selectedShow) return;
+  
+      const updatedFavorites = user.favorites.filter((favShow) => favShow.id !== showId);
+  
+      const { data, error } = await supabase
+        .from('users')
+        .update({ favorites: updatedFavorites })
+        .eq('id', user.id);
+  
+      if (error) {
+        throw new Error('Error updating favorites: ' + error.message);
+      }
+  
+      dispatch(removeFromShowFavorites(showId));
+      console.log('Favorite show removed successfully:', data);
+    } catch (error) {
+      console.error('Error removing favorite show:', error.message);
+    }
+  };
   //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
-    return foundShow;
+    const showFromDataBase = user.favorites.find((show) => show.id === showId)
+    
+    if(foundShow){
+      return foundShow
+    } else if (showFromDataBase) {
+      return showFromDataBase
+    } else {
+      return undefined
+    }
   };
   
   /*This function uses the findShowById function and displays the selected shows 
@@ -224,6 +270,7 @@ const removeFavoriteFromShow = async (id: string, showId: string) => {
    */
   const openDialog = (show: ShowPreview) => {
     const selectedShowData = findShowById(show.id);
+    console.log(selectedShowData)
      const activeShowsSeasons = selectedShowData?.seasons // The seasons of the active show.
     
      if (activeShowsSeasons) {
@@ -326,30 +373,55 @@ const handleGenreFilter = (genre: string) => {
   }
 };
 
-//This code adds the shows marked as favorite to the favorites page using localStorage.
-/*useEffect(() => {
-  updateFavoritesInLocalStorage(favoriteShow);
-}, [favoriteShow]);
+const checkIfStillFavorite = async (showId) => {
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('favorites')
+      .eq('id', user.id)
+      .single();
 
-const updateFavoritesInLocalStorage = (favorites: FavoriteShowData) => {
-  localStorage.setItem('favoriteShows', JSON.stringify(favorites));
-};
-*/
+    if (error) {
+      throw new Error('Error fetching user favorites');
+    }
 
-
-const handleAddToFavorites = () => {
-  if (!selectedShow) return;
-
-  const isShowFavorite = favoriteShow.some((favShow) => favShow.id === selectedShow.id);
-
-  if (!isShowFavorite) {
-    dispatch(addToShowFavorites(selectedShow));
-    addFavoritesToShow(user.id, selectedShow);
-  } else {
-    dispatch(removeFromShowFavorites(selectedShow.id));
-    removeFavoriteFromShow(user.id, selectedShow.id);
+    if (data) {
+      return data.favorites.some((show) => show.id === showId);
+    }
+  } catch (error) {
+    console.error('Error occurred while checking if still favorite:', error);
+    return false; // Return false in case of error
   }
 };
+
+const handleAddToFavorites = async () => {
+  if (!selectedShow || !user) return;
+
+  try {
+    const isCurrentlyFavoriteInDatabase = user.favorites.some((favShow) => favShow.id === selectedShow.id);
+    const isCurrentlyFavoriteLocally = favoriteShowArray.some((favShow) => favShow.id === selectedShow.id);
+
+    if (!isCurrentlyFavoriteInDatabase && !isCurrentlyFavoriteLocally) {
+      // Add the show to favorites locally
+      dispatch(addToShowFavorites(selectedShow));
+
+      // Add the show to favorites in Supabase
+      await addToFavorites(selectedShow.id);
+
+      // setIsFavorite(true); // Update the favorite state if needed
+    } else {
+      // Remove the show from favorites locally
+      dispatch(removeFromShowFavorites(selectedShow.id));
+      await removeFromFavorites(selectedShow.id);
+    }
+  } catch (error){
+    console.error('Error occurred', error)
+  }
+};
+
+
+
+
 
 
 
@@ -361,6 +433,11 @@ const handleMiniAudioClose = () => {
 
   return (
     <div>
+      <div className='carousal'>
+        <Carousal 
+        data = {data}
+        />
+      </div>
       <FilterBar
        onSearch={handleSearch}
        filteredShows={filteredShows}
@@ -380,10 +457,10 @@ const handleMiniAudioClose = () => {
         <div key={show.id}>
           <button className={`preview__information ${filteredShows.length === 1 ? 'preview__information-large' : ''}`}
             onClick={() => openDialog(show)}>
-            <div>
+       
            <img className={`preview__img ${filteredShows.length === 1 ? 'preview__img-large' : ''}`}
            src={show.image} alt={show.title} />
-           </div>
+       
            <div className="preview__content">
              <h3 className="preview__title">{show.title}</h3>
              <h3> Seasons:{show.seasons.length}</h3>
@@ -403,6 +480,7 @@ const handleMiniAudioClose = () => {
      
        
        {dialogOpen && selectedShow && selectedSeasons && (
+       <div className='dialog__main'>
         <div className="dialog__container">
           <div className="blur__background" />
           <dialog className="dialog">
@@ -412,8 +490,16 @@ const handleMiniAudioClose = () => {
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
             <button className="favorite__button" onClick={() => handleAddToFavorites()}>
-                  {favoriteMap[selectedShow.id] ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
-            </button>
+               {
+                favoriteShowArray.some((favShow) => favShow.id === selectedShow.id)
+              
+               ? (
+                <BookmarkIcon style={{ fill: 'red' }}/>
+                ) : (
+                <BookmarkBorderOutlinedIcon />
+                )}
+           </button>
+
               {currentEpisodeUrl && showAudioSettings &&(
           <div>
             <AudioPlayer
@@ -450,7 +536,7 @@ const handleMiniAudioClose = () => {
             </div>
               <div className="select__container">
                 <select value={selectedSeasonIndex ?? ''} onChange={handleSeasonSelect} className="seasons__select">
-                  <option value=""> Select a season</option>
+                  <option value=""> Season</option>
                   {selectedShow.seasons.map((season, index) => ( // Render only the seasons of the selected show
                     <option key={index} value={index}>
                       {season.season}
@@ -463,15 +549,19 @@ const handleMiniAudioClose = () => {
 
                  {/*First seasons information will display when dialog opens.*/}
                  {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
+                 
                 <div className="seasons__information">
+                  
                   <div className="seasons__title">
                   <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
                   <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
                   </div>
+                  <Tooltip title='Double click to play' arrow>
                   <ul className="seasons__episodes">
                     {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
+                   
                       <li key={index}  className="episodes">
-                       
+                      
                         <div  
                         className="play__button"
                         onClick={() =>{ handlePlayButtonClick(episode.file)
@@ -491,14 +581,17 @@ const handleMiniAudioClose = () => {
                           
                           
                           </div>
+                         
                       </li>
-                    
+                   
                     ))}
+
                   </ul>
-                  
+                  </Tooltip>
                   <button className="dialog__button" onClick={ closeDialog}>
                        Close
                      </button>
+               
                 </div>
               )}
             
@@ -550,11 +643,16 @@ const handleMiniAudioClose = () => {
             
           </dialog>
         </div>
+        </div>
       )}
        {isAudioPlaying && (
         <div className="mini__audiocontainer">
         <div className="mini__audio">
+          <div className="mini__img">
+          
           <img src={selectedShow.image}></img>
+          </div>
+          <div>
           <AudioPlayer
               ref={audioRef}
               autoPlay
@@ -564,10 +662,11 @@ const handleMiniAudioClose = () => {
               onPause={() => setIsPlaying(false)}
               onEnded={() => setIsPlaying(false)}
             />
-          <button 
+            <button 
           onClick={handleMiniAudioClose}
           className="mini__cancel"
            ><CloseIcon /></button>
+          </div>
         </div>
        </div>
       )}
@@ -581,7 +680,7 @@ const handleMiniAudioClose = () => {
       </div>
        )
      }
-        
+        <Footer />
     </div>
 
   )

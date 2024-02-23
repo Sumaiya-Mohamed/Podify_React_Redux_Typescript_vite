@@ -67,10 +67,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
     handleGenreFilter(genre); // Pass the selected genre to the handleGenreFilter(prop) function.
   };
   return (
-    <div>
-      <h3 className="heading__check">Check out our available shows!</h3>
+    <div className='filter__container'>
       <div className="filter__bar">
-        <form className="search__container" onSubmit={handleSubmit}>
+        <div>
+         <form className="search__container" onSubmit={handleSubmit}>
           <label htmlFor="search" className="search__label">
             Search
           </label>
@@ -83,8 +83,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
             required
             className="search__input"
           />
-        </form>
-
+         </form>
+        </div>
+        <div className="sort__genre">
         <div className="sort__container">
           <div className="filter__heading">
             <p>Sort By:</p>
@@ -106,6 +107,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
           <div className="genre__heading">
             <p>Genre:</p>
           </div>
+         
           <select className="genre__select" value={genre} onChange={handleSortGenre}>
           <option value="">All Genres</option>
           {allGenres.map((genre,index) => (
@@ -114,6 +116,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, filteredShows, o
             </option>
           ))}
         </select>
+     
+        </div>
         </div>
       </div>
     </div>

@@ -31,13 +31,24 @@ type FavoriteShow = {
   updated: Date;
 };
 
-type user = {
+type userInfo = {
   name: string;
   id: string;
   favorites: FavoriteShowData;
 };
 
-export const LogIn = () => {
+type LoginProps = {
+  setUserInfo : React.Dispatch<React.SetStateAction<{
+   name: string;
+   id: string;
+   favorites: any[];
+}>>
+  userInfo: userInfo;
+  setPage: React.Dispatch<React.SetStateAction<string>>
+ };
+
+
+export const LogIn: React.FC<LoginProps> = ({setPage,setUserInfo, userInfo,}) => {
   let navigate = useNavigate()
   const ids = useSelector((state: RootState) => state.id.id);
   const users =  useSelector((state: RootState) => state.users);
@@ -93,10 +104,11 @@ export const LogIn = () => {
     // Find the user data for each ID
     console.log(ids)
     ids.forEach((id) => {
-      const userInfo = data.find((info: user) => info.id === id);
-      if(userInfo){
-        dispatch(setUsersData(userInfo))
-        console.log(userInfo)
+      const userData: userInfo = data.find((info: userInfo) => info.id === id);
+      if(userData){
+        dispatch(setUsersData(userData))
+        localStorage.setItem('user', JSON.stringify(userData))
+        console.log(userData)
       } else{
         console.log('User info not found')
       }
@@ -120,13 +132,13 @@ export const LogIn = () => {
 
        // dispatch(setId(data.user.id));  
        fetchUserData();
-       navigate('/components/Homepage');
+       setPage('Home')
         console.log(userData)
-        console.log(data)
-      
+      goBackToHomePage()
     } catch (error) {
       alert(error);
     }
+    
   }
   
   
@@ -142,11 +154,19 @@ export const LogIn = () => {
  }
  }, [])*/
 
+ const goToSignUpPage = () => {
+  setPage('SignUp')
+ }
+ 
+ const goBackToHomePage = () => {
+  setPage('Home')
+ }
 
   return (
     <div>
+      <div className='login__page'>
       <form onSubmit={handleSubmit}
-       className='login__container'
+       className='loginform__container'
       >
         <input 
           placeholder='Email'
@@ -164,19 +184,19 @@ export const LogIn = () => {
         />
         
         <div className='button__containers'>
-        <Link to='/pages/SignUp'>
-        <button type='submit'  className='signup__login'>
-          Sign Up
+       
+        <button type='submit'  className='signup__login' onClick={goToSignUpPage}>
+          Sign Up?
         </button>
-        </Link> 
+    
 
-        <button type='submit'  className='submit__login'>
-          Submit
+        <button type='submit'  className='submit__login' >
+          Log In
         </button>
         </div>
 
       </form>
-      
+      </div>
     </div>
   )
 }

@@ -40,10 +40,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
   };
 
   return (
-    <div>
-      <h3 className="heading__check">Check out all your Favs!</h3>
-      <div className="filter__bar">
-        <form className="search__container" onSubmit={handleSubmit}>
+    <div >
+      <div className="Favoritesfilter__container">
+      <div className="Favoritesfilter__bar">
+        <form className="searchfavorites__container" onSubmit={handleSubmit}>
           <label htmlFor="search" className="search__label">
             Search
           </label>
@@ -54,10 +54,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
             value={searchQuery}
             onChange={handleSearch}
             required
-            className="search__input"
+            className="searchfavorites__input"
           />
         </form>
-
+        <div className="sort__genre">
         <div className="sort__container">
           <div className="filter__heading">
             <p>Sort By:</p>
@@ -88,8 +88,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenre
           ))}
         </select>
         </div>
+        </div>
       </div>
-    
+      </div>
     </div>
   );
 };
