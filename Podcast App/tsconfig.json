@@ -19,7 +19,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src","../src/store","../src/pages/SignUp.tsx","../src/pages/LogIn.tsx","../src/components/HomePage.tsx","../src/components/NavBar.tsx","../src/components/FavoritesPage.tsx"],
+  "include": ["../src"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "types": ["react", "react-dom", "react-router-dom"], // Ensure "react-router-dom" is included here
   "typeRoots": ["./node_modules/@types"], // Ensure this points to the correct path of @types
