@@ -17,6 +17,7 @@
   width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
+  z-index: 1;
  }
  
  .nav__buttons{
@@ -48,28 +49,31 @@
    .home{
     display: flex;
     flex-direction: column;
+    cursor: pointer;
    }
 
    .home > h3 {
     padding-left: 8px;
     margin-top: 0;
+
    }
 
    .user{
     display: flex;
     flex-direction: column;
     margin-left: 40px;
+    
   }
 
   .user > h3 {
     padding-left: 8px;
     margin-top: 0;
+
    }
 
   .bookmark{
     display: flex;
     flex-direction: column;
-    
   }
 
   .bookmark > img {
@@ -85,6 +89,25 @@
     margin-left: 30px;
    }
   
+   .homeActive{
+    display: flex;
+    border-top-color:rgba(212, 0, 255, 0.76); 
+    border-top-style: ridge;
+    padding-top: 2px;
+   }
+  
+   .userActive{
+    display: flex;
+    border-top-color:rgba(212, 0, 255, 0.76); 
+    border-top-style: ridge;
+    padding-top: 2px;
+   }
+  
+   .bookmarkActive{
+    display: flex;
+    border-top-color:rgba(212, 0, 255, 0.76); 
+    border-top-style: ridge;
+   }
 }
 
 @media only screen and (min-width: 500px){
@@ -125,30 +148,51 @@
  .home{
   display: flex;
   align-items: center;
+  cursor: pointer;
  }
 
- .home::after{
-  display: flex;
-  align-items: center;
-  border-bottom-style: solid;
- }
+
 
 .user{
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 
 .bookmark{
   display: flex;
   align-items: center;
+  cursor: pointer;
 }
 
 .bookmark > img {
  margin-left: 3px;
 }
 
+.homeActive{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-left-color:rgba(212, 0, 255, 0.76); 
+  border-left-style: ridge;
+ }
 
+ .userActive{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-left-color:rgba(212, 0, 255, 0.76); 
+  border-left-style: ridge;
+ }
+
+ .bookmarkActive{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-left-color:rgba(212, 0, 255, 0.76); 
+  border-left-style: ridge;
+ }
 
 }
  

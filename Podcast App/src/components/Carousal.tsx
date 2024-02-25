@@ -1,7 +1,4 @@
 import React, {useEffect,useState} from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store/store';
-import { setToken } from '../store/tokenSlice';
 import Slider, { Settings } from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -38,7 +35,6 @@ type CarouselProps = {
 
 
   export const Carousal: React.FC<CarouselProps> = ({ data }) => {
-    const [isFetched,setIsFetched] = useState<boolean>()
     const [promoShows,setPromoShows] = useState<ShowPreview>([])
     const settings: Settings = {
     dots: true,
@@ -49,11 +45,10 @@ type CarouselProps = {
     arrows: false,
   };
   
-  const token = useSelector((state: RootState) => state.token)
  
   useEffect(() => {
     let count = 0;
-    setIsFetched(true)
+   
     const generatePromoShows = () => {
       if (count < 7) {
         const randomIndex = Math.floor(Math.random() * data.length);
@@ -67,7 +62,6 @@ type CarouselProps = {
   
     const interval = setInterval(generatePromoShows, 1000);
     
-    setIsFetched(false)
     return () => clearInterval(interval);
     
   }, [data]);

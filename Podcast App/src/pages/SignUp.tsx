@@ -2,57 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'; 
 import { supabase } from '../Client'
-import { IdSlice, addId } from '../store/IdSlice';
-import { setUsers, userSlice } from '../store/userSlice';
 import { resetUsersData, setUsersData } from '../store/userDataSlice';
-import {userDataSlice} from '../store/userDataSlice'
 import { RootState } from '../store/store';
 import { v4 as uuidv4 } from 'uuid';
-import { userInfo } from 'os';
+import { clearShowFavorites } from '../store/favoriteShowSlice';
 
-type FavoriteShowData = Array<FavoriteShow>;
 
-type FavoriteShow = {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-    seasons: Array<{
-      season: number;
-      title: string;
-      image: string;
-      episodes: Array<{
-        title: string;
-        description: string;
-        episode: number;
-        file: string;
-      }>;
-    }>;
-    genres: Array<string>;
-    updated: Date;
-  };
-
-  type userInfo = {
-    name: string;
-    id: string;
-    favorites: FavoriteShowData;
-  };
-
-  type SignUpProps = {
-   setUserInfo : React.Dispatch<React.SetStateAction<{
-    name: string;
-    id: string;
-    favorites: any[];
-}>>
-   userInfo: userInfo;
+type SignUpProps = {
    setPage: React.Dispatch<React.SetStateAction<string>>
   };
 
-export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) => {
 
-  const allIds = useSelector((state: RootState) => state.id.id)
-  const token = useSelector((state: RootState) => state.token)
-  const user = useSelector((state: RootState) => state.userData)
+  export const SignUp: React.FC<SignUpProps> = ({setPage}) => {
+
   const favorites = useSelector((state: RootState) => state.favoriteShow)
  
   const dispatch = useDispatch();
@@ -64,7 +26,6 @@ export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) =
     password:''
   })
 
-  const navigate = useNavigate()
 
   function handleChange(event){
     setFormData((prevFormData)=>{
@@ -77,40 +38,13 @@ export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) =
 
   }
 
-/*useEffect(() => {
-  fetchUsers()
-}, [])
-async function fetchUsers(){
-  const {data} = await supabase
-    .from('users')
-    .select('*')
-    setUsers(data)
-    console.log(data)
-}
-
-
-async function getUsersById(){
-  const { data, error } = await supabase.auth.admin.getUserById()
-}*/
-
- //This function inserts each user information with their favorites into the "users" table.
- /*async function createUser(){
-  await supabase
-  .from('users')
-  .insert([
-    {id: id, name: user?.user?.user_metadata?.full_name, favorites: favorites },
-  ])
-  console.log("it happened")
-  //fetchUsers()
- }
-*/
 
 async function handleUserRegistration(){
   dispatch(resetUsersData())
+
   const userId = uuidv4();
 
-  
- localStorage.setItem('ids', JSON.stringify(userId))
+  localStorage.setItem('ids', JSON.stringify(userId))
   
   try{
     const {data, error} = await supabase
@@ -120,9 +54,8 @@ async function handleUserRegistration(){
     ])
     
     dispatch(setUsersData({id: userId, name: formData.fullName, favorites: favorites }))
-    
+    dispatch(clearShowFavorites)
     localStorage.setItem('user', JSON.stringify({id: userId, name: formData.fullName, favorites: favorites }))
-    console.log(userInfo)
     if(error){
       console.log('Error creating user:', error)
     }else{
@@ -150,8 +83,6 @@ async function handleUserRegistration(){
         }
       )
       if (error) throw error
-     // dispatch(setId(data.user.id))
-      dispatch(setUsers(data))
       handleUserRegistration();
       setPage('Home')
       alert('Check your email for verification link')
@@ -162,14 +93,7 @@ async function handleUserRegistration(){
     
   }
 
-  /*useEffect(() => {
-   if(id){
-    handleUserRegistration()
 
-   }
-  }, [id])
-   */   
-  
 
   return (
     <div className='signup__page'>

@@ -3,10 +3,10 @@ import { Link, useNavigate} from 'react-router-dom';
 import { supabase } from '../Client';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { setToken } from '../store/tokenSlice';
 import { resetUsersData, setUsersData } from '../store/userDataSlice';
 import { addId } from '../store/IdSlice';
 import { userInfo } from 'os';
+import { addToShowFavorites, clearShowFavorites } from '../store/favoriteShowSlice';
 
 
 type FavoriteShowData = Array<FavoriteShow>;
@@ -38,33 +38,21 @@ type userInfo = {
 };
 
 type LoginProps = {
-  setUserInfo : React.Dispatch<React.SetStateAction<{
-   name: string;
-   id: string;
-   favorites: any[];
-}>>
-  userInfo: userInfo;
   setPage: React.Dispatch<React.SetStateAction<string>>
  };
 
 
-export const LogIn: React.FC<LoginProps> = ({setPage,setUserInfo, userInfo,}) => {
-  let navigate = useNavigate()
+export const LogIn: React.FC<LoginProps> = ({setPage}) => {
+
   const ids = useSelector((state: RootState) => state.id.id);
-  const users =  useSelector((state: RootState) => state.users);
   const userData = useSelector((state: RootState) => state.userData);
   const dispatch = useDispatch();
   
-  const [userIds, setUserIds] = useState([])
+  
   const [formData,setFormData] = useState({
         email:'',password:''
   })
   
-  /*useEffect(() => {
-   setUserIds(ids)
-    console.log(ids)
-  }, [ids])
- */
   function handleChange(event){
     setFormData((prevFormData)=>{
       return{
@@ -87,34 +75,35 @@ export const LogIn: React.FC<LoginProps> = ({setPage,setUserInfo, userInfo,}) =>
   
  async function fetchUserData(){
     dispatch(resetUsersData())
+    
      const { data, error } = await supabase
       .from('users')
       .select('*')
-      
-     /* userIds.forEach((id) => {
-        const userInfo = data.find((info) => info.id === id )
-        if(userInfo){
-          dispatch(setUsersData(userInfo))
-          console.log(userInfo)
-        } else {
-          console.log('user not found')
-        }
-      })*/
 
     // Find the user data for each ID
-    console.log(ids)
     ids.forEach((id) => {
-      const userData: userInfo = data.find((info: userInfo) => info.id === id);
-      if(userData){
-        dispatch(setUsersData(userData))
-        localStorage.setItem('user', JSON.stringify(userData))
-        console.log(userData)
+      const info: userInfo = data.find((info: userInfo) => info.id === id);
+      if(info){
+        dispatch(clearShowFavorites)
+        dispatch(setUsersData(info))
+        info.favorites.forEach((show) => dispatch(addToShowFavorites(show)))
+        localStorage.setItem('user', JSON.stringify(info))
+        console.log(info)
       } else{
         console.log('User info not found')
       }
     })
      
    }
+
+   
+ const goToSignUpPage = () => {
+  setPage('SignUp')
+ }
+ 
+ const goBackToHomePage = () => {
+  setPage('Home')
+ }
 
   async function handleSubmit(event) {
    
@@ -129,11 +118,8 @@ export const LogIn: React.FC<LoginProps> = ({setPage,setUserInfo, userInfo,}) =>
         throw error;
       }
 
-
-       // dispatch(setId(data.user.id));  
        fetchUserData();
-       setPage('Home')
-        console.log(userData)
+      
       goBackToHomePage()
     } catch (error) {
       alert(error);
@@ -141,26 +127,7 @@ export const LogIn: React.FC<LoginProps> = ({setPage,setUserInfo, userInfo,}) =>
     
   }
   
-  
- /*if(token){
-  sessionStorage.setItem('token', JSON.stringify(token))
- }
- console.log(token)
 
- useEffect(() => {
- if(sessionStorage.getItem('token')){
-  let newData = JSON.parse(sessionStorage.getItem('token'))
-  dispatch(setToken(newData))
- }
- }, [])*/
-
- const goToSignUpPage = () => {
-  setPage('SignUp')
- }
- 
- const goBackToHomePage = () => {
-  setPage('Home')
- }
 
   return (
     <div>
