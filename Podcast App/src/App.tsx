@@ -119,8 +119,10 @@ export const App: React.FC = () => {
       if (count < 5) {
         const randomIndex = Math.floor(Math.random() * podcastData.length);
         const topShow = podcastData[randomIndex];
+        if(topShow !== undefined){
         setPromoShows(prevPromoShows => [...prevPromoShows, topShow]);
         count++;
+        }
       } else {
         clearInterval(interval);
       }
@@ -159,7 +161,7 @@ export const App: React.FC = () => {
            </div> 
          ) : (
           <div>
-            {promoShows.map((show,index) => (
+            {promoShows?.map((show,index) => (
             <div key={index} className='top__container'>
               <button className={'top__preview'}>
                 <div className='container'>

@@ -9,6 +9,8 @@ import AudioPlayer from 'react-h5-audio-player';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
+import { Tooltip } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
 
 
 type FavoriteShowData = Array<FavoriteShow>;
@@ -68,7 +70,7 @@ type Episodes = {
 
 
 export const FavoritesPage: React.FC = () => {
-  const favoriteShow = useSelector((state:RootState) => state.favoriteShow)
+  const [currentFavShow,setCurrentFavShow] = useState([])
   const dispatch = useAppDispatch(); 
   const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
   const [selectedShow, setSelectedShow] = useState<FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
@@ -80,14 +82,15 @@ export const FavoritesPage: React.FC = () => {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows episodes information.
   const [genreOption, setGenreOption] = useState<string>('');
- 
+  const [count, setCount] = useState(0);
   
   
   const [sortOption, setSortOption] = React.useState<string>('');
   const audioRef = useRef(null);
 
   const id = useSelector((state: RootState) => state.id)
-  const userData = useSelector((state: RootState) => state.userData)
+  const user = useSelector((state: RootState) => state.userData)
+  const favoriteShow = useSelector((state: RootState) => state.favoriteShow)
   const navigate = useNavigate();
 
   //This function takes the user back to the home page.
@@ -112,35 +115,45 @@ export const FavoritesPage: React.FC = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('users')
-          .select('favorites')
-          .eq('id', userData.id);
-
-        console.log(data);
-        if (error) {
-          console.error('Error fetching user data:', error);
-        } else {
-          // Update the local state with user's favorite shows
-          const userFavorites: FavoriteShowData = data[0].favorites
-         
-          setAllFavoriteShows(userFavorites);
+      if(favoriteShow.length === 0){
+        try {
+          const { data, error } = await supabase
+            .from('users')
+            .select('favorites')
+            .eq('id', user.id);
+  
+          console.log(data);
+          if (error) {
+            console.error('Error fetching user data:', error);
+          } else {
+            // Update the local state with user's favorite shows
+            const userFavorites: FavoriteShowData = data[0].favorites
+           
+            setAllFavoriteShows(userFavorites);
+            
+            // Dispatch the action to update favorites in the store
+            dispatch(clearShowFavorites());
+            userFavorites.forEach((show) => {
+              const isAlreadyAFav = favoriteShow.some((favShow) => favShow.id === show.id)
+             if(!isAlreadyAFav){
+              dispatch(addToShowFavorites(show));
+             }else{
+              return
+             }
+            });
+            console.log(favoriteShow)
+            setCurrentFavShow(favoriteShow)
+          }
           
-          // Dispatch the action to update favorites in the store
-          dispatch(clearShowFavorites());
-          userFavorites.forEach((show) => {
-            dispatch(addToShowFavorites(show));
-          });
-          console.log(favoriteShow)
+        } catch (error) {
+          console.error('Error fetching user data:', error);
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
       }
+      
     };
 
     fetchUserData();
-  }, [userData.id, dispatch]);
+  }, [user.id, dispatch]);
   
 
   
@@ -291,12 +304,54 @@ const clearFavorites = () => {
   localStorage.removeItem('favoriteShows');
 };
 
+const deleteFavorite = async (showId: string) => {
+  if (!user || !selectedShow) return
+  const isFavoriteInState = favoriteShow.some((favShow) => favShow.id === showId);
+  try{   
+  
+   const {data,error} = await supabase
+  .from('users')
+  .select('favorites')
+  .eq('id', user.id)
+  .single()
+
+  const isInDataBase =  data.favorites.some((favShow) => favShow.id !== showId)
+  const newCurrentFavs =  data.favorites.filter((favShow) => favShow.id !== showId)
+ if(error){
+  console.error('Error updating favorites', error)
+}
+  if(isFavoriteInState){
+  dispatch(removeFromShowFavorites(showId))
+  } 
+  if(isInDataBase){
+    
+   
+      const {data,error} = await supabase
+      .from('users')
+      .update({favorites: newCurrentFavs})
+      .eq('id', user.id)
+
+     if(error){
+      console.error('Error updating favorites', error)
+    }
+  }
+  }catch(error){
+      console.error('Error removing favorite', error)
+    }
+  console.log('it happened')
+}
+
+const handleRerender = () => {
+  setCount(count + 1)
+}
+const uniqueId = uuidv4();
+
 return (
  <div>
       <div className="favoritesHeader__container">
       <h3 className="heading">Check out all your Favs!</h3>
         <div className="right__elements">
-          <button onClick={clearFavorites} className="favorites__buttons">
+          <button className="favorites__buttons">
             Reset
           </button>
         </div>
@@ -311,8 +366,9 @@ return (
       {favoriteShow.map((show,index) => {
               
             return (
-              <button key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
-               onClick={() => openDialog(show)}
+          
+              <div key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
+              onClick={() => openDialog(show)}
               >
            
            <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
@@ -329,8 +385,10 @@ return (
              </div>
              <p>Updated:  {new Date(show.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
            </div>
-          
-              </button>
+           
+              </div>
+        
+         
             );
           }
 
@@ -342,6 +400,8 @@ return (
           <dialog className="dialog">
           <div className="selectedshow__mp3">
             <div>
+            <button className='delete__button' onClick={() => deleteFavorite(selectedShow?.id)}>Remove</button>
+
             <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
             </div>
             <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
@@ -401,6 +461,7 @@ return (
                   <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
                   <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
                   </div>
+                  <Tooltip title='Double click to play' arrow>
                   <ul className="seasons__episodes">
                     {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
                   
@@ -429,7 +490,7 @@ return (
                      
                     ))}
                   </ul>
-              
+                  </Tooltip>
                 </div>
               )}
             
@@ -482,9 +543,9 @@ return (
        )}
 
       {isAudioPlaying && (
-          <div className="mini__audiocontainer">
-          <div className="mini__audio">
-            <div className="mini__img">
+          <div className="favoritesmini__audiocontainer">
+          <div className="favoritesmini__audio">
+            <div className="favoritesmini__img">
             
             <img src={selectedShow.image}></img>
             </div>
@@ -492,7 +553,7 @@ return (
             <AudioPlayer
                 ref={audioRef}
                 autoPlay
-                className="mini__audioplayer"
+                className="favoritesmini__audioplayer"
                 src={currentEpisodeUrl}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
@@ -500,7 +561,7 @@ return (
               />
               <button 
             onClick={handleMiniAudioClose}
-            className="mini__cancel"
+            className="favoritesmini__cancel"
              ><CloseIcon /></button>
             </div>
           </div>
@@ -508,12 +569,6 @@ return (
       )}
       </div>
     
-      <div className="backbutton__container">
-      <button 
-      className="back__button"
-      onClick={() =>  window.location.reload()}
-      >Back</button>
-      </div>
 
       <Footer />
   </div>

@@ -9,7 +9,7 @@ import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlin
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store/store';
-import { addToShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
+import { addToShowFavorites, clearShowFavorites, removeFromShowFavorites } from '../store/favoriteShowSlice';
 import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
@@ -119,6 +119,7 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,
   const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
   const [genreOption, setGenreOption] = useState<string>('')
   const [newId, setNewId] = useState<string>('')
+  const [currentFavs,setCurrentFavs] = useState([])
  
 
   const favoriteShowArray = useSelector((state: RootState) => state.favoriteShow);
@@ -169,97 +170,100 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,
 }, [dispatch]);
   
    
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (user.id !== '') {
-  
-        const { data, error } = await supabase
-          .from('users')
-          .select('favorites')
-          .eq('id', user.id)
-          .single();
-  
-        if (error) {
-          console.error('Error fetching user data:', error.message);
-          return;
-        }
-  
-        // Check if favorites data is available
-        if (data) {
-          // Dispatch action to add favorite shows to state
-          data.favorites.forEach((show: FavoriteShow) => {
-            dispatch(addToShowFavorites(show));
-          });
-        }
-      }
-      } catch (error) {
-        console.error('Error fetching user data:', error.message);
-      }
-    };
-  
-    fetchUserData();
-  }, [user.id, dispatch]); // Depend on user and dispatch
+useEffect(() => {
+  const fetchUserData = async () => {
+    try {
+      if (user.id !== '') {
 
-  const addToFavorites = async (showId: string) => {
-    try {
-      if (!user || !selectedShow) return;
-  
-      const isInDatabase = user.favorites.some((favShow) => favShow.id === showId);
-      const isFavoriteInLocalState = favoriteShowArray.some((favShow) => favShow.id === showId);
-  
-      if (!isInDatabase && !isFavoriteInLocalState) {
-        const updatedFavorites = [...user.favorites, selectedShow];
-  
-        const { data, error } = await supabase
-          .from('users')
-          .update({ favorites: updatedFavorites })
-          .eq('id', user.id);
-  
-        if (error) {
-          throw new Error('Error updating favorites: ' + error.message);
-        }
-  
-        dispatch(addToShowFavorites(selectedShow));
-        console.log('Favorite show added successfully:', data);
-      } else {
-        console.log('Show is already a favorite.');
-      }
-    } catch (error) {
-      console.error('Error adding favorite show:', error.message);
-    }
-  };
-  
-  const removeFromFavorites = async (showId: string) => {
-    try {
-      if (!user || !selectedShow) return;
-  
-      const updatedFavorites = user.favorites.filter((favShow) => favShow.id !== showId);
-  
       const { data, error } = await supabase
         .from('users')
-        .update({ favorites: updatedFavorites })
-        .eq('id', user.id);
-  
+        .select('favorites')
+        .eq('id', user.id)
+        .single();
+
       if (error) {
-        throw new Error('Error updating favorites: ' + error.message);
+        console.error('Error fetching user data:', error.message);
+        return;
       }
-  
-      dispatch(removeFromShowFavorites(showId));
-      console.log('Favorite show removed successfully:', data);
+
+      // Check if favorites data is available
+      if (data) {
+       setCurrentFavs([])
+       setCurrentFavs(data.favorites)
+      }
+    }
     } catch (error) {
-      console.error('Error removing favorite show:', error.message);
+      console.error('Error fetching user data:', error.message);
     }
   };
-  //This function finds the selected shows information through it's id.
+
+  fetchUserData();
+}, [user.id, dispatch]); // Depend on user and dispatch
+  
+
+  const addToFavorites = async (showId: string) => {
+   if (!user || !selectedShow) return;
+  
+    const isFavoriteInLocalState = favoriteShowArray.some((favShow) => favShow.id === showId);
+    const isInDataBase = user.favorites.some((favShow) => favShow.id === showId)
+    const newArray = [...favoriteShowArray, selectedShow]
+    
+    if (!isFavoriteInLocalState) {
+      dispatch(addToShowFavorites(selectedShow))
+   }
+   if(!isInDataBase){
+    try{  
+      const {data,error} = await supabase
+     .from('users')
+     .update({favorites: newArray})
+     .eq('id', user.id)
+
+     if(error){
+    console.error('Error updating favorites', error)
+    }
+  }catch(error){
+    console.error('Error adding favorites',error)
+  }
+  }else{
+  return
+}
+} 
+  
+/*const removeFromFavorites = async (showId: string) => {
+      if (!user || !selectedShow) return
+        
+      const isFavoriteInLocalState = currentFavs.some((favShow) => favShow.id === showId);
+      const isInDataBase = user.favorites.some((favShow) => favShow.id === showId)
+
+      const newCurrentFavs =  currentFavs.filter((favShow) => favShow.id !== showId)
+      setCurrentFavs(newCurrentFavs)
+      if(isFavoriteInLocalState){
+      dispatch(removeFromShowFavorites(showId))
+      } 
+      if(isInDataBase){
+        
+        try{
+          const {data,error} = await supabase
+          .from('users')
+          .update({favorites: newCurrentFavs})
+          .eq('id', user.id)
+  
+         if(error){
+          console.error('Error updating favorites', error)
+        }
+   
+        }catch(error){
+          console.error('Error removing favorite', error)
+        }
+      }
+  };
+  */
+     //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
-    const showFromDataBase = user.favorites.find((show) => show.id === showId)
     
     if(foundShow){
       return foundShow
-    } else if (showFromDataBase) {
-      return showFromDataBase
     } else {
       return undefined
     }
@@ -395,27 +399,15 @@ const checkIfStillFavorite = async (showId) => {
 };
 
 const handleAddToFavorites = async () => {
-  if (!selectedShow || !user) return;
+   if (!selectedShow || !user) return;
 
-  try {
-    const isCurrentlyFavoriteInDatabase = user.favorites.some((favShow) => favShow.id === selectedShow.id);
-    const isCurrentlyFavoriteLocally = favoriteShowArray.some((favShow) => favShow.id === selectedShow.id);
+  const isCurrentlyFavoriteLocally = favoriteShowArray.some((favShow) => favShow.id === selectedShow.id);
 
-    if (!isCurrentlyFavoriteInDatabase && !isCurrentlyFavoriteLocally) {
-      // Add the show to favorites locally
-      dispatch(addToShowFavorites(selectedShow));
-
-      // Add the show to favorites in Supabase
-      await addToFavorites(selectedShow.id);
-
-      // setIsFavorite(true); // Update the favorite state if needed
+  if (!isCurrentlyFavoriteLocally) {
+    addToFavorites(selectedShow.id);
+    dispatch(setUsersData({id: user.id,name: user.name,favorites: favoriteShowArray}))
     } else {
-      // Remove the show from favorites locally
-      dispatch(removeFromShowFavorites(selectedShow.id));
-      await removeFromFavorites(selectedShow.id);
-    }
-  } catch (error){
-    console.error('Error occurred', error)
+   return
   }
 };
 
@@ -662,10 +654,16 @@ const handleMiniAudioClose = () => {
               onPause={() => setIsPlaying(false)}
               onEnded={() => setIsPlaying(false)}
             />
+          
             <button 
           onClick={handleMiniAudioClose}
           className="mini__cancel"
-           ><CloseIcon /></button>
+           >
+            <Tooltip title='Close' arrow> 
+            <CloseIcon />
+            </Tooltip>
+            </button>
+           
           </div>
         </div>
        </div>

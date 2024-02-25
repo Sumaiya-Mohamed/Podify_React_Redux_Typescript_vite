@@ -38,7 +38,6 @@ type CarouselProps = {
 
 
   export const Carousal: React.FC<CarouselProps> = ({ data }) => {
-    const [isFetched,setIsFetched] = useState<boolean>()
     const [promoShows,setPromoShows] = useState<ShowPreview>([])
     const settings: Settings = {
     dots: true,
@@ -53,7 +52,7 @@ type CarouselProps = {
  
   useEffect(() => {
     let count = 0;
-    setIsFetched(true)
+   
     const generatePromoShows = () => {
       if (count < 7) {
         const randomIndex = Math.floor(Math.random() * data.length);
@@ -67,7 +66,6 @@ type CarouselProps = {
   
     const interval = setInterval(generatePromoShows, 1000);
     
-    setIsFetched(false)
     return () => clearInterval(interval);
     
   }, [data]);

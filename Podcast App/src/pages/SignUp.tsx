@@ -9,6 +9,8 @@ import {userDataSlice} from '../store/userDataSlice'
 import { RootState } from '../store/store';
 import { v4 as uuidv4 } from 'uuid';
 import { userInfo } from 'os';
+import { clearShowFavorites } from '../store/favoriteShowSlice';
+import { clear } from 'console';
 
 type FavoriteShowData = Array<FavoriteShow>;
 
@@ -77,40 +79,13 @@ export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) =
 
   }
 
-/*useEffect(() => {
-  fetchUsers()
-}, [])
-async function fetchUsers(){
-  const {data} = await supabase
-    .from('users')
-    .select('*')
-    setUsers(data)
-    console.log(data)
-}
-
-
-async function getUsersById(){
-  const { data, error } = await supabase.auth.admin.getUserById()
-}*/
-
- //This function inserts each user information with their favorites into the "users" table.
- /*async function createUser(){
-  await supabase
-  .from('users')
-  .insert([
-    {id: id, name: user?.user?.user_metadata?.full_name, favorites: favorites },
-  ])
-  console.log("it happened")
-  //fetchUsers()
- }
-*/
 
 async function handleUserRegistration(){
   dispatch(resetUsersData())
+
   const userId = uuidv4();
 
-  
- localStorage.setItem('ids', JSON.stringify(userId))
+  localStorage.setItem('ids', JSON.stringify(userId))
   
   try{
     const {data, error} = await supabase
@@ -120,9 +95,8 @@ async function handleUserRegistration(){
     ])
     
     dispatch(setUsersData({id: userId, name: formData.fullName, favorites: favorites }))
-    
+    dispatch(clearShowFavorites)
     localStorage.setItem('user', JSON.stringify({id: userId, name: formData.fullName, favorites: favorites }))
-    console.log(userInfo)
     if(error){
       console.log('Error creating user:', error)
     }else{
@@ -152,6 +126,7 @@ async function handleUserRegistration(){
       if (error) throw error
      // dispatch(setId(data.user.id))
       dispatch(setUsers(data))
+      
       handleUserRegistration();
       setPage('Home')
       alert('Check your email for verification link')
