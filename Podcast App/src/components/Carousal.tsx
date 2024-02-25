@@ -1,7 +1,4 @@
 import React, {useEffect,useState} from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../store/store';
-import { setToken } from '../store/tokenSlice';
 import Slider, { Settings } from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -48,7 +45,6 @@ type CarouselProps = {
     arrows: false,
   };
   
-  const token = useSelector((state: RootState) => state.token)
  
   useEffect(() => {
     let count = 0;

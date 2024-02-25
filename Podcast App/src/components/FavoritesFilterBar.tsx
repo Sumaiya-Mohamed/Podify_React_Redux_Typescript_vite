@@ -9,6 +9,7 @@ type FilterBarProps = {
   handleGenreFilter: (genre: string) => void;
 };
 
+
 export const FilterBar: React.FC<FilterBarProps> = ({ onSearch, onSort, allGenres, handleGenreFilter }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [sortShows, setSortShows] = useState<string>('');

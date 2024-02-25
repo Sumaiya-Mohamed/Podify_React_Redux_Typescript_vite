@@ -1,6 +1,6 @@
 @media (min-width: 100px) and (max-width: 499px) {
    body .signup__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -89,7 +89,7 @@
 
 @media (min-width: 500px) {
     .signup__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -179,7 +179,7 @@
 
 @media (min-width: 980px) {
     .signup__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -269,7 +269,7 @@
 
 @media (min-height: 1000px) {
     .signup__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;

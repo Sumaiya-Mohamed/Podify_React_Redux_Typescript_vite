@@ -1,6 +1,6 @@
 @media (min-width: 100px) and (max-width: 499px) {
   body .login__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -109,7 +109,7 @@
         padding-bottom: 0;
     }
     .login__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public//hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -219,7 +219,7 @@
         padding-bottom: 0;
     }
     .login__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;
@@ -325,7 +325,7 @@
 
 @media (min-height: 1000px) {
     .login__page{
-        background-image: url('../assets/hero.jpg');
+        background-image: url('./public/hero.jpg');
         background-repeat: no-repeat;
         background-size: cover;
         width: 100%;

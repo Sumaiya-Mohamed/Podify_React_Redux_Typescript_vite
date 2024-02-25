@@ -1,35 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { NavBar } from './components/NavBar'
-import { Carousal } from './components/Carousal'
-import { PodcastPreview } from './components/Podcast-Preview'
-import { Footer } from './components/Footer'
+import { PodcastPreview } from './pages/HomePage'
 import {CircularProgress } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { IdSlice, resetId } from './store/IdSlice';
-import {tokenSlice, resetToken} from './store/tokenSlice'
-import { favoriteShowSlice } from './store/favoriteShowSlice'; 
-import { RootState } from './store/store';
-import { useNavigate } from 'react-router-dom';
 import { LogIn } from './pages/LogIn';
-import { FavoritesPage } from './pages/FavoritesPage';
-import { FilterBar } from './components/Filter-bar';
-//import { setUsers } from './store/Users';
-import { supabase } from './Client';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { FavoritesPage } from './components/FavoritesPage';
 import { SignUp } from './pages/SignUp';
 
 
 type ShowOriginalData = Array<Show>
-
-type ShowPreview = {
-  id: string;
-  title: string;
-  description: string;
-  image: string;
-  seasons: Seasons;
-  genres: Array<string>;
-  updated: Date;
-};
 
 
 type Show = {
@@ -62,28 +40,7 @@ export const App: React.FC = () => {
   const [podcastData, setPodcastData] = useState<ShowOriginalData>([]);
   const [promoShows,setPromoShows] = useState([])
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isfetched, setIsFetched] = useState<boolean>(true);
   const [page, setPage] = useState<string>('Home')
-  const [userInfo,setUserInfo] = useState({
-    name: '',
-    id: '',
-    favorites: []
-  })
-  
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
-  const id = useSelector((state: RootState) => state.id)
-  const token = useSelector((state: RootState) => state.token)
-  const userData = useSelector((state: RootState) => state.users)
-  const favorites = useSelector((state: RootState) => state.favoriteShow)
-
-  useEffect(() => {
-    if(!token && !id){
-      navigate('/pages/LogIn')
-    }
-  }, [token, id, navigate])
-
-  
   
   
 
@@ -114,7 +71,6 @@ export const App: React.FC = () => {
 
   useEffect(() => {
     let count = 0;
-    setIsFetched(true)
     const generatePromoShows = () => {
       if (count < 5) {
         const randomIndex = Math.floor(Math.random() * podcastData.length);
@@ -130,19 +86,12 @@ export const App: React.FC = () => {
   
     const interval = setInterval(generatePromoShows, 1000);
     
-    setIsFetched(false)
     return () => clearInterval(interval);
     
   }, [podcastData]);
 
  
-    const showId = podcastData.flatMap((show) =>{
-        return(
-          show.id
-        )
-    })
-  
-  
+
   return (
     <div className='main__layout'>
           <div className='box1'>
@@ -155,13 +104,7 @@ export const App: React.FC = () => {
           <div className='box2'>
           <h3 className='top__picks'> Top picks for you today</h3>
           <div className='buttons__container'>
-         {isLoading ? (
-            <div className="loading__promocontainer">
-            <CircularProgress size={30} color="inherit" className="loading__open"/> 
-           </div> 
-         ) : (
-          <div>
-            {promoShows?.map((show,index) => (
+          {promoShows?.map((show,index) => (
             <div key={index} className='top__container'>
               <button className={'top__preview'}>
                 <div className='container'>
@@ -179,8 +122,6 @@ export const App: React.FC = () => {
             
             </div>
           ))}
-            </div>
-         )}
          
       </div>
           </div>
@@ -195,33 +136,26 @@ export const App: React.FC = () => {
           ) : ( 
            <div>
             <div className='hero__container'> 
-              <img src='../icons/hero.jpg' alt='hero image'></img>
+              <img src='../public/hero.jpg' alt='hero image'></img>
               <div className='banner'>
                 <h3>Browse over 100+ shows</h3>
               </div>
             </div>
-           <PodcastPreview
-           data= {podcastData}
-           setUserInfo = {setUserInfo}
-           userInfo = {userInfo}
-          />
-       
-          </div>
-             
-          )}
+              <PodcastPreview
+               data= {podcastData}
+               />
+            </div>
+        )}
           </div>
           }
+
           {page === 'LogIn' && 
           <LogIn 
           setPage = {setPage}
-          setUserInfo = {setUserInfo}
-          userInfo = {userInfo}
           />}
           {page === 'Favorites' && <FavoritesPage />}
           {page === 'SignUp' && 
           <SignUp
-            setUserInfo = {setUserInfo}
-            userInfo = {userInfo}
             setPage = {setPage}
           />}
           </div>

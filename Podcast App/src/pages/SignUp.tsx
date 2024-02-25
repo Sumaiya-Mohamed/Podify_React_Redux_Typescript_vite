@@ -2,59 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux'; 
 import { supabase } from '../Client'
-import { IdSlice, addId } from '../store/IdSlice';
-import { setUsers, userSlice } from '../store/userSlice';
 import { resetUsersData, setUsersData } from '../store/userDataSlice';
-import {userDataSlice} from '../store/userDataSlice'
 import { RootState } from '../store/store';
 import { v4 as uuidv4 } from 'uuid';
-import { userInfo } from 'os';
 import { clearShowFavorites } from '../store/favoriteShowSlice';
-import { clear } from 'console';
 
-type FavoriteShowData = Array<FavoriteShow>;
 
-type FavoriteShow = {
-    id: string;
-    title: string;
-    description: string;
-    image: string;
-    seasons: Array<{
-      season: number;
-      title: string;
-      image: string;
-      episodes: Array<{
-        title: string;
-        description: string;
-        episode: number;
-        file: string;
-      }>;
-    }>;
-    genres: Array<string>;
-    updated: Date;
-  };
-
-  type userInfo = {
-    name: string;
-    id: string;
-    favorites: FavoriteShowData;
-  };
-
-  type SignUpProps = {
-   setUserInfo : React.Dispatch<React.SetStateAction<{
-    name: string;
-    id: string;
-    favorites: any[];
-}>>
-   userInfo: userInfo;
+type SignUpProps = {
    setPage: React.Dispatch<React.SetStateAction<string>>
   };
 
-export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) => {
 
-  const allIds = useSelector((state: RootState) => state.id.id)
-  const token = useSelector((state: RootState) => state.token)
-  const user = useSelector((state: RootState) => state.userData)
+  export const SignUp: React.FC<SignUpProps> = ({setPage}) => {
+
   const favorites = useSelector((state: RootState) => state.favoriteShow)
  
   const dispatch = useDispatch();
@@ -66,7 +26,6 @@ export const SignUp: React.FC<SignUpProps>= ({setUserInfo, userInfo, setPage}) =
     password:''
   })
 
-  const navigate = useNavigate()
 
   function handleChange(event){
     setFormData((prevFormData)=>{
@@ -124,9 +83,6 @@ async function handleUserRegistration(){
         }
       )
       if (error) throw error
-     // dispatch(setId(data.user.id))
-      dispatch(setUsers(data))
-      
       handleUserRegistration();
       setPage('Home')
       alert('Check your email for verification link')
@@ -137,14 +93,7 @@ async function handleUserRegistration(){
     
   }
 
-  /*useEffect(() => {
-   if(id){
-    handleUserRegistration()
 
-   }
-  }, [id])
-   */   
-  
 
   return (
     <div className='signup__page'>

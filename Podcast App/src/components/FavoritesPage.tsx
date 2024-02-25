@@ -71,7 +71,6 @@ type Episodes = {
 
 export const FavoritesPage: React.FC = () => {
   const [currentFavShow,setCurrentFavShow] = useState([])
-  const dispatch = useAppDispatch(); 
   const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
   const [selectedShow, setSelectedShow] = useState<FavoriteShow> ()   // State that stores a specific shows data to be displayed on the dialog when a that show is selected.
   const [selectedSeasons, setSelectedSeasons] = useState <Seasons> ()   // Stores the seasons of the selected show.
@@ -80,38 +79,17 @@ export const FavoritesPage: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false); // This will be used to pause and play the audio.
   const [allFavoriteShows, setAllFavoriteShows] = useState<FavoriteShowData>([])
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [selectedEpisodeIndex, setSelectedEpisodeIndex] = useState< number | undefined> (0);//Index used to keep track of the active shows episodes information.
   const [genreOption, setGenreOption] = useState<string>('');
-  const [count, setCount] = useState(0);
-  
-  
   const [sortOption, setSortOption] = React.useState<string>('');
+  
   const audioRef = useRef(null);
+  const dispatch = useAppDispatch(); 
 
-  const id = useSelector((state: RootState) => state.id)
+ 
   const user = useSelector((state: RootState) => state.userData)
   const favoriteShow = useSelector((state: RootState) => state.favoriteShow)
   const navigate = useNavigate();
 
-  //This function takes the user back to the home page.
-  const backToHome = () => {
-    navigate('/components/Homepage');
-  };
-
-  /*useEffect(() => {
-    //Using local storage to store the favorite shows.
-    const favoriteShowsFromLocalStorage = localStorage.getItem('favoriteShows');
-    if (favoriteShowsFromLocalStorage) {
-      const parsedFavorites: FavoriteShowData = JSON.parse(favoriteShowsFromLocalStorage);
-      setAllFavoriteShows(parsedFavorites);
-      dispatch(clearShowFavorites());
-      parsedFavorites.forEach((show) => {
-        dispatch(addToShowFavorites(show));
-      });
-    }
-  }, []);*/
-
-  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -122,18 +100,17 @@ export const FavoritesPage: React.FC = () => {
             .select('favorites')
             .eq('id', user.id);
   
-          console.log(data);
           if (error) {
             console.error('Error fetching user data:', error);
           } else {
             // Update the local state with user's favorite shows
-            const userFavorites: FavoriteShowData = data[0].favorites
+            const userFavorites: FavoriteShowData = data[0]?.favorites
            
             setAllFavoriteShows(userFavorites);
             
             // Dispatch the action to update favorites in the store
             dispatch(clearShowFavorites());
-            userFavorites.forEach((show) => {
+            userFavorites?.forEach((show) => {
               const isAlreadyAFav = favoriteShow.some((favShow) => favShow.id === show.id)
              if(!isAlreadyAFav){
               dispatch(addToShowFavorites(show));
@@ -141,7 +118,6 @@ export const FavoritesPage: React.FC = () => {
               return
              }
             });
-            console.log(favoriteShow)
             setCurrentFavShow(favoriteShow)
           }
           
@@ -206,7 +182,6 @@ export const FavoritesPage: React.FC = () => {
    *so that selected episodes audio plays.
   */
   const handlePlayButtonClick = (episodeUrl: string) => {
-    setCurrentEpisodeUrl(null)
     setCurrentEpisodeUrl(episodeUrl);
     setIsPlaying(true);
 
@@ -299,10 +274,6 @@ const handleGenreFilter = (genre: string) => {
   }
 };
 
-const clearFavorites = () => {
-  dispatch(clearShowFavorites());
-  localStorage.removeItem('favoriteShows');
-};
 
 const deleteFavorite = async (showId: string) => {
   if (!user || !selectedShow) return
@@ -324,8 +295,6 @@ const deleteFavorite = async (showId: string) => {
   dispatch(removeFromShowFavorites(showId))
   } 
   if(isInDataBase){
-    
-   
       const {data,error} = await supabase
       .from('users')
       .update({favorites: newCurrentFavs})
@@ -338,24 +307,15 @@ const deleteFavorite = async (showId: string) => {
   }catch(error){
       console.error('Error removing favorite', error)
     }
-  console.log('it happened')
 }
 
-const handleRerender = () => {
-  setCount(count + 1)
-}
-const uniqueId = uuidv4();
 
 return (
  <div>
       <div className="favoritesHeader__container">
       <h3 className="heading">Check out all your Favs!</h3>
-        <div className="right__elements">
-          <button className="favorites__buttons">
-            Reset
-          </button>
-        </div>
       </div>
+      
       <FilterBar 
       onSearch={handleSearch} 
       onSort={handleSort} 
@@ -363,210 +323,210 @@ return (
       handleGenreFilter= {handleGenreFilter}
       />
       <div className="preview__container">
-      {favoriteShow.map((show,index) => {
+      {user.id === '' && <div><h3 className='oops'>Oops! Looks like you're not logged in.</h3></div>}
+       {favoriteShow.map((show,index) => {
               
-            return (
-          
-              <div key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
-              onClick={() => openDialog(show)}
-              >
-           
-           <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
-           src= {show.image} alt={show.title} />
-      
-           <div className="preview__content" key={show.id}>
-             <h3 className="preview__title">{show.title}</h3>
-             <h3>Seasons: {show.seasons.length}</h3>
-             <div className="genres-container">
-               <p className="show__genre"> 
-                 <span className="genre__title">Genres: </span>
-                 {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'Not applicable'}
-               </p>
-             </div>
-             <p>Updated:  {new Date(show.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
-           </div>
-           
-              </div>
+              return (
+                <div key={index} className={`preview__information ${favoriteShow.length === 1 ? 'preview__information-large' : ''} ${favoriteShow.length === 2 ? 'preview__information-medium' : ''}`}
+                onClick={() => openDialog(show)}
+                >
+             
+             <img className={`preview__img ${favoriteShow.length === 1 ? 'preview__img-large' : ''}`}
+             src= {show.image} alt={show.title} />
         
-         
-            );
-          }
-
-        )}
-  
-       {dialogOpen && selectedShow && (
-        <div className="dialog__container">
-          <div className="blur__background" />
-          <dialog className="dialog">
-          <div className="selectedshow__mp3">
-            <div>
-            <button className='delete__button' onClick={() => deleteFavorite(selectedShow?.id)}>Remove</button>
-
-            <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
-            </div>
-            <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
-          
-              {currentEpisodeUrl && (
-          <div>
-            <AudioPlayer
-              ref={audioRef}
-              className="audio__player"
-              autoPlay
-              src={currentEpisodeUrl}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              onEnded={() => setIsPlaying(false)}
-            />
-          </div>
-         )}
-            </div>
-            <div >
-            <div className="selectedshow__content">
-              <p>
-                <span className="content__headings">Title:</span>{" "}
-                {selectedShow.title}
-              </p>
-              <p>
-                <span className="content__headings">Seasons:</span>{" "}
-                {selectedShow.seasons.length}
-              </p>
-              <p>
-                <span className="content__headings">Updated: </span>{" "}
-                {new Date(selectedShow.updated).toLocaleDateString("en-US", {
-                  dateStyle: "long",
-                })}
-              </p>
-              <p>
-                <span className="content__headings">Description: </span>
-                {selectedShow.description}
-              </p>
-            </div>
-            </div>
-            <div className="select__container">
-                <select value={selectedSeasonIndex ?? ''} onChange={handleSeasonSelect} className="seasons__select">
-                  <option value=""> Select a season</option>
-                  {selectedShow.seasons.map((season, index) => ( // Render only the seasons of the selected show
-                    <option key={index} value={index}>
-                      {season.season}
-                    </option>
-                  ))}
-                </select>
-
-              </div>
-                 
-                   {/*First seasons information will display when dialog opens.*/}
-                   {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
-                <div className="seasons__information">
-                  <div className="seasons__title">
-                  <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
-                  <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
-                  </div>
-                  <Tooltip title='Double click to play' arrow>
-                  <ul className="seasons__episodes">
-                    {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
-                  
-                      <li key={index}  className="episodes">
-                       
-                        <div  
-                        className="play__button"
-                        onClick={() =>{ handlePlayButtonClick(episode.file)
-                                             setIsPlaying(true)
-                              }
-                              }>
-                            <p>
-                              Episode {episode.episode}: 
-                            </p>
-                          
-                         
-                          <div>
-                            <p>{episode.title}</p>
-                            <p>Description: {episode.description}</p>
-                         
-                          </div>
-                          
-                          
-                          </div>
-                      </li>
-                     
-                    ))}
-                  </ul>
-                  </Tooltip>
-                </div>
-              )}
-            
-
-              {/* Render episodes of the selected season */}
-              {(selectedSeasonIndex !== null || selectedSeasonIndex !== undefined) && selectedShow.seasons[selectedSeasonIndex as number]?.episodes && (
-                <div className="seasons__information">
-                  <div className="seasons__title">
-                  <h3>Season: {selectedShow.seasons[selectedSeasonIndex as number].season} | <span>{selectedShow.seasons[selectedSeasonIndex as number].title}</span></h3>
-                  <h3>Episodes: {selectedShow.seasons[selectedSeasonIndex as number].episodes.length}</h3>
-                  </div>
-                  
-                  <ul className="seasons__episodes">
-                    {selectedShow.seasons[selectedSeasonIndex as number].episodes.map((episode, index) => (
-                       <li key={index}  className="episodes">
-                       
-                       <div  
-                       className="play__button"
-                       onClick={() =>{ handlePlayButtonClick(episode.file)
-                                            setIsPlaying(true)
-          
-                             }
-                             }>
-                           <p>
-                             Episode {episode.episode}: 
-                           </p>
-                         
-                        
-                         <div>
-                           <p>{episode.title}</p>
-                           <p>Description: {episode.description}</p>
-                        
-                         </div>
-                       
-                      
-                         </div>
-                     </li>
-                    
-                   
-                    ))}
-                  </ul>
-                 
-                </div>
-              )}
-                  <button className="dialog__button" onClick={closeDialog}>
-                   Close
-                  </button>
-            </dialog>
+             <div className="preview__content" key={show.id}>
+               <h3 className="preview__title">{show.title}</h3>
+               <h3>Seasons: {show.seasons.length}</h3>
+               <div className="genres-container">
+                 <p className="show__genre"> 
+                   <span className="genre__title">Genres: </span>
+                   {show.genres && show.genres.length > 0 ? show.genres.join(', ') : 'Not applicable'}
+                 </p>
+               </div>
+               <p>Updated:  {new Date(show.updated).toLocaleDateString('en-US', { dateStyle: 'long' })}</p>
              </div>
-       )}
-
-      {isAudioPlaying && (
-          <div className="favoritesmini__audiocontainer">
-          <div className="favoritesmini__audio">
-            <div className="favoritesmini__img">
+             
+                </div>
+          
             
-            <img src={selectedShow.image}></img>
-            </div>
+              );
+            }
+  
+          )}
+    
+         {dialogOpen && selectedShow && (
+          <div className="dialog__container">
+            <div className="blur__background" />
+            <dialog className="dialog">
+            <div className="selectedshow__mp3">
+              <div>
+              <button className='delete__button' onClick={() => deleteFavorite(selectedShow?.id)}>Remove</button>
+  
+              <img src={selectedShow.image} alt="Show image" className="blurred__background"></img>
+              </div>
+              <img src={selectedShow.image} alt="Show image" className="selectedshow__image"></img>
+            
+                {currentEpisodeUrl && (
             <div>
-            <AudioPlayer
+              <AudioPlayer
                 ref={audioRef}
+                className="audio__player"
                 autoPlay
-                className="favoritesmini__audioplayer"
                 src={currentEpisodeUrl}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
                 onEnded={() => setIsPlaying(false)}
               />
-              <button 
-            onClick={handleMiniAudioClose}
-            className="favoritesmini__cancel"
-             ><CloseIcon /></button>
             </div>
-          </div>
-         </div>
-      )}
+           )}
+              </div>
+              <div >
+              <div className="selectedshow__content">
+                <p>
+                  <span className="content__headings">Title:</span>{" "}
+                  {selectedShow.title}
+                </p>
+                <p>
+                  <span className="content__headings">Seasons:</span>{" "}
+                  {selectedShow.seasons.length}
+                </p>
+                <p>
+                  <span className="content__headings">Updated: </span>{" "}
+                  {new Date(selectedShow.updated).toLocaleDateString("en-US", {
+                    dateStyle: "long",
+                  })}
+                </p>
+                <p>
+                  <span className="content__headings">Description: </span>
+                  {selectedShow.description}
+                </p>
+              </div>
+              </div>
+              <div className="select__container">
+                  <select value={selectedSeasonIndex ?? ''} onChange={handleSeasonSelect} className="seasons__select">
+                    <option value=""> Select a season</option>
+                    {selectedShow.seasons.map((season, index) => ( // Render only the seasons of the selected show
+                      <option key={index} value={index}>
+                        {season.season}
+                      </option>
+                    ))}
+                  </select>
+  
+                </div>
+                   
+                     {/*First seasons information will display when dialog opens.*/}
+                     {(selectedSeasonIndex === undefined) && selectedShow && selectedShow.seasons.length > 0 && (
+                  <div className="seasons__information">
+                    <div className="seasons__title">
+                    <h3>Season: <span>{selectedShow.seasons[0].season}</span> | {selectedShow.seasons[0].title} </h3>
+                    <h3>Episodes: {selectedShow.seasons[0].episodes.length}</h3>
+                    </div>
+                    <Tooltip title='Double click to play' arrow>
+                    <ul className="seasons__episodes">
+                      {selectedShow.seasons[0].episodes.map((episode: Episodes, index) => (
+                    
+                        <li key={index}  className="episodes">
+                         
+                          <div  
+                          className="play__button"
+                          onClick={() =>{ handlePlayButtonClick(episode.file)
+                                               setIsPlaying(true)
+                                }
+                                }>
+                              <p>
+                                Episode {episode.episode}: 
+                              </p>
+                            
+                           
+                            <div>
+                              <p>{episode.title}</p>
+                              <p>Description: {episode.description}</p>
+                           
+                            </div>
+                            
+                            
+                            </div>
+                        </li>
+                       
+                      ))}
+                    </ul>
+                    </Tooltip>
+                  </div>
+                )}
+              
+  
+                {/* Render episodes of the selected season */}
+                {(selectedSeasonIndex !== null || selectedSeasonIndex !== undefined) && selectedShow.seasons[selectedSeasonIndex as number]?.episodes && (
+                  <div className="seasons__information">
+                    <div className="seasons__title">
+                    <h3>Season: {selectedShow.seasons[selectedSeasonIndex as number].season} | <span>{selectedShow.seasons[selectedSeasonIndex as number].title}</span></h3>
+                    <h3>Episodes: {selectedShow.seasons[selectedSeasonIndex as number].episodes.length}</h3>
+                    </div>
+                    
+                    <ul className="seasons__episodes">
+                      {selectedShow.seasons[selectedSeasonIndex as number].episodes.map((episode, index) => (
+                         <li key={index}  className="episodes">
+                         
+                         <div  
+                         className="play__button"
+                         onClick={() =>{ handlePlayButtonClick(episode.file)
+                                              setIsPlaying(true)
+            
+                               }
+                               }>
+                             <p>
+                               Episode {episode.episode}: 
+                             </p>
+                           
+                          
+                           <div>
+                             <p>{episode.title}</p>
+                             <p>Description: {episode.description}</p>
+                          
+                           </div>
+                         
+                        
+                           </div>
+                       </li>
+                      
+                     
+                      ))}
+                    </ul>
+                   
+                  </div>
+                )}
+                    <button className="dialog__button" onClick={closeDialog}>
+                     Close
+                    </button>
+              </dialog>
+               </div>
+         )}
+  
+        {isAudioPlaying && (
+            <div className="favoritesmini__audiocontainer">
+            <div className="favoritesmini__audio">
+              <div className="favoritesmini__img">
+              
+              <img src={selectedShow.image}></img>
+              </div>
+              <div>
+              <AudioPlayer
+                  ref={audioRef}
+                  autoPlay
+                  className="favoritesmini__audioplayer"
+                  src={currentEpisodeUrl}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  onEnded={() => setIsPlaying(false)}
+                />
+                <button 
+              onClick={handleMiniAudioClose}
+              className="favoritesmini__cancel"
+               ><CloseIcon /></button>
+              </div>
+            </div>
+           </div>
+        )}
       </div>
     
 

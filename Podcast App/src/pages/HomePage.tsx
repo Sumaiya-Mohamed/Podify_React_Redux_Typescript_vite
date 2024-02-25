@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef} from 'react';
-import { FilterBar } from './Filter-bar';
+import { FilterBar } from '../components/Filter-bar';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
 import  {CircularProgress, Tooltip } from '@mui/material';
-import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
-import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { useSelector, useDispatch } from 'react-redux';
@@ -14,8 +12,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { allGenres } from '../data';
 import { supabase } from '../Client';
 import { setUsersData } from '../store/userDataSlice';
-import { Footer } from './Footer';
-import { Carousal } from './Carousal';
+import { Footer } from '../components/Footer';
+import { Carousal } from '../components/Carousal';
 
 
 
@@ -85,24 +83,12 @@ type FavoriteShow = {
   updated: Date;
 };
 
-type userInfo = {
-  name: string;
-  id: string;
-  favorites: FavoriteShowData;
-};
-
 type PodcastPreviewProps = {
   data: ShowOriginalData;
-  setUserInfo : React.Dispatch<React.SetStateAction<{
-    name: string;
-    id: string;
-    favorites: any[];
-}>>
-   userInfo: userInfo;
 };
 
 
-export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,userInfo}) => {
+export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [updatedShowData, setUpdatedShowData] = useState<AllShowData> ([]) // The complete data that has the seasons and episodes information.
   const [dialogOpen, setDialogOpen] = useState<boolean> (false); 
@@ -114,7 +100,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,
   const [filteredShows, setFilteredShows] = useState<AllShowData>([]);
   const [sortOption, setSortOption] = useState<string>('');
   const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteMap, setFavoriteMap] = useState<Record<string, boolean>>({});
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [showAudioSettings, setShowAudioSettings] = useState<boolean>(false)
   const [genreOption, setGenreOption] = useState<string>('')
@@ -123,7 +108,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,
  
 
   const favoriteShowArray = useSelector((state: RootState) => state.favoriteShow);
-  const ids= useSelector((state: RootState) => state.id.id);
   const user = useSelector((state: RootState) => state.userData)
   const dispatch = useDispatch<AppDispatch>();
   const audioRef = useRef(null);
@@ -165,7 +149,6 @@ export const PodcastPreview: React.FC<PodcastPreviewProps> = ({data,setUserInfo,
     if (storageUserInfo) {
         const info = JSON.parse(storageUserInfo);
         dispatch(setUsersData(info));
-        console.log(info)
     }
 }, [dispatch]);
   
@@ -178,7 +161,7 @@ useEffect(() => {
       const { data, error } = await supabase
         .from('users')
         .select('favorites')
-        .eq('id', user.id)
+        .eq('id', user?.id)
         .single();
 
       if (error) {
@@ -188,7 +171,6 @@ useEffect(() => {
 
       // Check if favorites data is available
       if (data) {
-       setCurrentFavs([])
        setCurrentFavs(data.favorites)
       }
     }
@@ -229,35 +211,6 @@ useEffect(() => {
 }
 } 
   
-/*const removeFromFavorites = async (showId: string) => {
-      if (!user || !selectedShow) return
-        
-      const isFavoriteInLocalState = currentFavs.some((favShow) => favShow.id === showId);
-      const isInDataBase = user.favorites.some((favShow) => favShow.id === showId)
-
-      const newCurrentFavs =  currentFavs.filter((favShow) => favShow.id !== showId)
-      setCurrentFavs(newCurrentFavs)
-      if(isFavoriteInLocalState){
-      dispatch(removeFromShowFavorites(showId))
-      } 
-      if(isInDataBase){
-        
-        try{
-          const {data,error} = await supabase
-          .from('users')
-          .update({favorites: newCurrentFavs})
-          .eq('id', user.id)
-  
-         if(error){
-          console.error('Error updating favorites', error)
-        }
-   
-        }catch(error){
-          console.error('Error removing favorite', error)
-        }
-      }
-  };
-  */
      //This function finds the selected shows information through it's id.
   const findShowById = (showId: string): ShowPreview | undefined => {
     const foundShow = updatedShowData.find((show) => show.id === showId);
@@ -274,7 +227,6 @@ useEffect(() => {
    */
   const openDialog = (show: ShowPreview) => {
     const selectedShowData = findShowById(show.id);
-    console.log(selectedShowData)
      const activeShowsSeasons = selectedShowData?.seasons // The seasons of the active show.
     
      if (activeShowsSeasons) {
@@ -377,26 +329,7 @@ const handleGenreFilter = (genre: string) => {
   }
 };
 
-const checkIfStillFavorite = async (showId) => {
-  try {
-    const { data, error } = await supabase
-      .from('users')
-      .select('favorites')
-      .eq('id', user.id)
-      .single();
 
-    if (error) {
-      throw new Error('Error fetching user favorites');
-    }
-
-    if (data) {
-      return data.favorites.some((show) => show.id === showId);
-    }
-  } catch (error) {
-    console.error('Error occurred while checking if still favorite:', error);
-    return false; // Return false in case of error
-  }
-};
 
 const handleAddToFavorites = async () => {
    if (!selectedShow || !user) return;
@@ -410,10 +343,6 @@ const handleAddToFavorites = async () => {
    return
   }
 };
-
-
-
-
 
 
 
