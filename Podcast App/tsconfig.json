@@ -19,7 +19,7 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["../src"],
   "references": [{ "path": "./tsconfig.node.json" }],
   "types": ["react", "react-dom", "react-router-dom"], // Ensure "react-router-dom" is included here
   "typeRoots": ["./node_modules/@types"], // Ensure this points to the correct path of @types
