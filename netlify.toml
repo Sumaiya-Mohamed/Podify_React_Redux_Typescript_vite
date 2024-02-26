@@ -1,6 +1,0 @@
-[build]
-  # Exclude the node_modules folder from caching
-  publish = "build"
-  command = "npm ci && npm run build"
-  functions = "functions"
-  cache = { paths = ["public", "src", "package.json", "package-lock.json"] }
